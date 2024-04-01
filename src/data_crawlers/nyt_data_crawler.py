@@ -5,7 +5,7 @@ from prisma import Prisma
 from datetime import datetime
 from db.posts import get_all_posts, create_post
 
-async def main() -> None:
+async def crawl_nyt_data() -> None:
     prisma = Prisma()
     await prisma.connect()
 
@@ -28,12 +28,9 @@ async def main() -> None:
             article["web_url"]
         )
 
-    # Get all posts
-    posts = await get_all_posts(prisma)
-    for post in posts:
-        print(post)
+    # print all posts
+    # posts = await get_all_posts(prisma)
+    # for post in posts:
+        #print(post)
 
     await prisma.disconnect()
-
-if __name__ == '__main__':
-    asyncio.run(main())

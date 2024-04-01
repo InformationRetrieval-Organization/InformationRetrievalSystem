@@ -1,2 +1,4 @@
 pynytimes
 prisma
+flask
+scikit-learn
