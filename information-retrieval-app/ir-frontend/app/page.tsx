@@ -1,51 +1,69 @@
-import { Link } from "@nextui-org/link";
-import { Snippet } from "@nextui-org/snippet";
-import { Code } from "@nextui-org/code"
-import { button as buttonStyles } from "@nextui-org/theme";
-import { siteConfig } from "@/config/site";
-import { title, subtitle } from "@/components/primitives";
-import { GithubIcon } from "@/components/icons";
+"use client";
+import React, { useState } from "react";
+import { Button, Input } from "@nextui-org/react";
+import { SearchIcon } from "../components/icons";
+import ResultsList from "./components/ResultsList";
+
+const sample: SearchResult[] = [
+  {
+    title: "Sample Result 1",
+    subtitle: "Subtitle 1",
+    link: "http://example.com/1",
+    timestamp: "2022-01-01T00:00:00Z",
+    content: "This is the content of Sample Result 1",
+  },
+  {
+    title: "Sample Result 2",
+    subtitle: "Subtitle 2",
+    link: "http://example.com/2",
+    timestamp: "2022-01-02T00:00:00Z",
+    content: "This is the content of Sample Result 2",
+  },
+  {
+    title: "Sample Result 3",
+    subtitle: "Subtitle 3",
+    link: "http://example.com/3",
+    timestamp: "2022-01-03T00:00:00Z",
+    content: "This is the content of Sample Result 3",
+  },
+];
 
 export default function Home() {
-	return (
-		<section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
-			<div className="inline-block max-w-lg text-center justify-center">
-				<h1 className={title()}>Make&nbsp;</h1>
-				<h1 className={title({ color: "violet" })}>beautiful&nbsp;</h1>
-				<br />
-				<h1 className={title()}>
-					websites regardless of your design experience.
-				</h1>
-				<h2 className={subtitle({ class: "mt-4" })}>
-					Beautiful, fast and modern React UI library.
-				</h2>
-			</div>
+  const [inputValue, setInputValue] = useState("");
+  const [results, setResults] = useState<SearchResult[] | null>(null);
 
-			<div className="flex gap-3">
-				<Link
-					isExternal
-					href={siteConfig.links.docs}
-					className={buttonStyles({ color: "primary", radius: "full", variant: "shadow" })}
-				>
-					Documentation
-				</Link>
-				<Link
-					isExternal
-					className={buttonStyles({ variant: "bordered", radius: "full" })}
-					href={siteConfig.links.github}
-				>
-					<GithubIcon size={20} />
-					GitHub
-				</Link>
-			</div>
+  const handleSearch = async () => {
+    /*
+    const response = await fetch(
+      `https://your-api-url.com/search?query=${inputValue}`
+    );
+    const data = await response.json();
 
-			<div className="mt-8">
-				<Snippet hideSymbol hideCopyButton variant="flat">
-					<span>
-						Get started by editing <Code color="primary">app/page.tsx</Code>
-					</span>
-				</Snippet>
-			</div>
-		</section>
-	);
+	setResults(data);
+	*/
+
+    // TODO: Implement the search functionality
+    setResults(sample);
+  };
+
+  return (
+    <section className="m-8">
+      <div className="flex items-center gap-2">
+        <Input
+          value={inputValue}
+          onChange={(e) => setInputValue(e.target.value)}
+          placeholder="Type to search..."
+          size="sm"
+          startContent={<SearchIcon size={18} />}
+          type="search"
+        />
+
+        <Button color="primary" onClick={handleSearch}>
+          Search
+        </Button>
+      </div>
+
+      <ResultsList results={results} />
+    </section>
+  );
 }
