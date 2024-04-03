@@ -1,8 +1,7 @@
 # TODO: Implement the Boolean Model, see GitHub issue for more details:
 # https://github.com/InformationRetrieval-Organization/InformationRetrievalSystem/issues/3
-def boolean_search(query):
 
-    return queryfrom sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.feature_extraction.text import TfidfVectorizer
 from prisma import Prisma
 from db.posts import get_all_posts, create_post
 import asyncio
@@ -17,6 +16,5 @@ async def build_boolean_model():
     # Tokenize the content + Map the content to the post_id
     
     # Create the Postinglists
-    
     
     await prisma_client.disconnect()

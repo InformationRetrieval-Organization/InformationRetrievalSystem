@@ -3,3 +3,6 @@
 def search_vector_space(query):
 
     return query
+
+def build_vector_space_model():
+    return None
