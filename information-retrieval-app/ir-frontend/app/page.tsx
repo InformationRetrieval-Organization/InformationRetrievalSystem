@@ -1,8 +1,9 @@
 "use client";
 import React, { useState } from "react";
-import { Button, Input } from "@nextui-org/react";
+import { Button, Divider, Input } from "@nextui-org/react";
 import { SearchIcon } from "../components/icons";
 import ResultsList from "./components/ResultsList";
+import AdvancedFilter from "./components/AdvancedFilter";
 
 const sample: SearchResult[] = [
   {
@@ -31,37 +32,47 @@ const sample: SearchResult[] = [
 export default function Home() {
   const [inputValue, setInputValue] = useState("");
   const [results, setResults] = useState<SearchResult[] | null>(null);
+  const [filters, setFilters] = useState([{ operator: "AND", value: "" }]);
 
   const handleSearch = async () => {
-    /*
-    const response = await fetch(
-      `https://your-api-url.com/search?query=${inputValue}`
-    );
-    const data = await response.json();
+    try {
+      let url = `http://127.0.0.1:5000/search/vector-space?q=${inputValue}`;
 
-	setResults(data);
-	*/
+      // if any filter is set, use boolean search
+      if (filters.some((filter) => filter.value !== "")) {
+        url = `http://127.0.0.1:5000/search/boolean?q=${inputValue}&filters=${JSON.stringify(filters)}`;
+      }
 
-    // TODO: Implement the search functionality
-    setResults(sample);
+      const response = await fetch(url);
+      const data = await response.json();
+
+      setResults(data);
+    } catch (error) {
+      console.error("Failed to fetch data:", error);
+      // todo: Handle the error appropriately
+      setResults(sample);
+    }
   };
 
   return (
-    <section className="m-8">
+    <section className="flex flex-col gap-5 m-8">
       <div className="flex items-center gap-2">
         <Input
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
-          placeholder="Type to search..."
-          size="sm"
-          startContent={<SearchIcon size={18} />}
+          placeholder="search term"
+          size="md"
           type="search"
         />
 
-        <Button color="primary" onClick={handleSearch}>
-          Search
+        <Button isIconOnly color="primary" variant="solid" size="lg" onClick={handleSearch}>
+          <SearchIcon size={18} />
         </Button>
       </div>
+
+      <AdvancedFilter filters={filters} setFilters={setFilters} />
+
+      <Divider />
 
       <ResultsList results={results} />
     </section>
