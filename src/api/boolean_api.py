@@ -8,8 +8,8 @@ boolean_search_blueprint = Blueprint('boolean_search', __name__)
 def search_post():
     json = request.get_json()
     
-    dict = {} 
+    operator_value_list = [] 
     for item in json:
-        dict[item['operator']] = item['value']
+        operator_value_list.append((item['operator'], item['value'])) 
         
-    return dict
+    return operator_value_list
