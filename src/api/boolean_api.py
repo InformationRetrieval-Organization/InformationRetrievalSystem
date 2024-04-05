@@ -1,5 +1,7 @@
 from flask import Blueprint, request
 
+from information_retrieval.boolean_model import search_boolean_model
+
 boolean_search_blueprint = Blueprint('boolean_search', __name__)
 
 # Boolean Model endpoint
@@ -11,5 +13,5 @@ def search_post():
     operator_value_list = [] 
     for item in json:
         operator_value_list.append((item['operator'], item['value'])) 
-        
-    return operator_value_list
+    
+    return search_boolean_model(operator_value_list)
