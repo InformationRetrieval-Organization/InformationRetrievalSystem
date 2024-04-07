@@ -2,3 +2,4 @@ pynytimes
 prisma
 flask
 scikit-learn
+asyncio

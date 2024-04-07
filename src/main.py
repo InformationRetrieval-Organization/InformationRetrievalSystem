@@ -1,3 +1,4 @@
+import asyncio
 from flask import Flask
 from api.vector_space_api import vector_space_search_blueprint
 from api.boolean_api import boolean_search_blueprint
@@ -9,17 +10,20 @@ app = Flask(__name__)
 app.register_blueprint(vector_space_search_blueprint)
 app.register_blueprint(boolean_search_blueprint)
 
-if __name__ == "__main__":
+async def main():
     # Crawl data from New York Times and store in database
-    crawl_nyt_data()
+    await crawl_nyt_data()
 
     #Todo: Preprocessing, steamming, stop words removal, etc.
     
     # Build Boolean model
-    build_boolean_model()
+    await build_boolean_model()
     
     # Build the vector space model
     build_vector_space_model()
 
     # Run the Flask app
     app.run(debug=True)
+
+if __name__ == "__main__":
+    asyncio.run(main())
