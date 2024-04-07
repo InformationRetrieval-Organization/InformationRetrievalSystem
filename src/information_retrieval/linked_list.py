@@ -4,8 +4,16 @@ class Node:
         self.next = None
 
 class LinkedList:
-    def __init__(self):
+    def __init__(self, data=None):
         self.head = None
+        if data is not None:
+            self.insert(data)
+
+    def __iter__(self):
+        node = self.head
+        while node is not None:
+            yield node.data
+            node = node.next            
 
     def is_empty(self):
         return self.head is None
