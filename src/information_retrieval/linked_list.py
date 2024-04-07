@@ -30,7 +30,7 @@ class LinkedList:
             
     def insertSorted(self, data):
         new_node = Node(data)
-        if self.is_empty() or self.data >= new_node.data: # if the list is empty or the data is smaller than the head
+        if self.is_empty() or self.head.data >= new_node.data: # if the list is empty or the data is smaller than the head
             new_node.next = self.head
             self.head = new_node
         else:
