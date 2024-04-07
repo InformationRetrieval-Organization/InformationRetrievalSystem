@@ -1,15 +1,18 @@
 import os
 import asyncio
-from prisma import Prisma
 from datetime import datetime
+from singleton.prisma_singleton import PrismaSingleton
+from prisma import models
 
-async def get_all_posts(prisma) -> list[any]:
+prisma = PrismaSingleton().db
+
+async def get_all_posts() -> list[models.Post]:
     try:
         return await prisma.post.find_many()
     except Exception as e:
         print(f"An error occurred while fetching posts: {e}")
 
-async def create_post(prisma, title, content, published_on, link):
+async def create_post(title, content, published_on, link) -> models.Post:
     try:
         return await prisma.post.create(
             data = {

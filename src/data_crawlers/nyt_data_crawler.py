@@ -1,14 +1,10 @@
 import os
 from pynytimes import NYTAPI
 import asyncio
-from prisma import Prisma
 from datetime import datetime
 from db.posts import get_all_posts, create_post
 
 async def crawl_nyt_data() -> None:
-    prisma = Prisma()
-    await prisma.connect()
-
     nyt_api_key = os.getenv("NYT_API_KEY")
     nyt = NYTAPI(nyt_api_key, parse_dates=True)
     begin_date = datetime.strptime("2024-03-01", "%Y-%m-%d").date()
@@ -21,7 +17,6 @@ async def crawl_nyt_data() -> None:
 
     for article in articles:
         await create_post(
-            prisma, 
             article["headline"]["main"], 
             article["abstract"], 
             article["pub_date"], 
@@ -29,8 +24,6 @@ async def crawl_nyt_data() -> None:
         )
 
     # print all posts
-    # posts = await get_all_posts(prisma)
+    # posts = await get_all_posts()
     # for post in posts:
         #print(post)
-
-    await prisma.disconnect()

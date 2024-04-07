@@ -2,7 +2,6 @@
 # https://github.com/InformationRetrieval-Organization/InformationRetrievalSystem/issues/3
 
 from sklearn.feature_extraction.text import TfidfVectorizer
-from prisma import Prisma
 from db.posts import get_all_posts, create_post
 from information_retrieval.linked_list import LinkedList
 
@@ -11,14 +10,12 @@ _term_frequency = {} # Store the term frequency of each word
 _all_doc_ids = set() # Store all the document ids
 
 async def build_boolean_model():
-    prisma_client = Prisma()
-    await prisma_client.connect()
-    
     global _inverted_index
     global _term_frequency 
     
     # Get all posts content
-    posts = await get_all_posts(prisma_client).values_list("id", "content")
+    posts = await get_all_posts()
+    posts = [(post.id, post.content) for post in posts]
 
     # Create the Postinglists and map the term frequency
     for post in posts:
@@ -31,8 +28,6 @@ async def build_boolean_model():
                 _inverted_index[word] = LinkedList(post[0])
                 _term_frequency[word] = 1
                 _all_doc_ids.add(post[0])
-    
-    await prisma_client.disconnect()
     
 def search_boolean_model(query):
     global _all_doc_ids
