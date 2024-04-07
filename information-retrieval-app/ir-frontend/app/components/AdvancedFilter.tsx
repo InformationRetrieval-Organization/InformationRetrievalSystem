@@ -1,5 +1,3 @@
-"use client";
-import React, { useState } from "react";
 import { Button, Accordion, AccordionItem, Select, SelectItem, Input } from "@nextui-org/react";
 import { MinusIcon, PlusIcon } from "@/components/icons";
 
