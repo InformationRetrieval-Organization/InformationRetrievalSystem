@@ -20,6 +20,10 @@ async def crawl_nyt_data() -> None:
     cwd = os.getcwd()
     file_path = os.path.join(cwd, 'files', 'Post.csv')
 
+    # Check if file exists then delete it
+    if os.path.exists(file_path):
+        os.remove(file_path)
+
     # Log in to NYT
     driver = login_nyt()  # Perform login using the driver
 
@@ -52,7 +56,11 @@ async def crawl_nyt_data() -> None:
             })   
 
         df = pd.DataFrame(data)
-        df.to_csv(file_path, index=False)
+        # Check if file exists, if not, write headers
+        if not os.path.isfile(file_path):
+            df.to_csv(file_path, index=False)
+        else:  # else it exists so append without writing the header
+            df.to_csv(file_path, mode='a', header=False, index=False)
 
         page += 1
 
