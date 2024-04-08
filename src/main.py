@@ -5,6 +5,7 @@ from api.boolean_api import boolean_search_blueprint
 from data_crawlers.nyt_data_crawler import crawl_nyt_data
 from information_retrieval.vector_space_model import build_vector_space_model
 from information_retrieval.boolean_model import build_boolean_model
+from preprocessing.preprocessing import preprocess_documents
 from db.helper import init_database
 
 app = Flask(__name__)
@@ -18,7 +19,8 @@ async def main():
     # Crawl data from New York Times and store in database
     await crawl_nyt_data()
 
-    #Todo: Preprocessing, steamming, stop words removal, etc.
+    #Preprocessing, steamming, stop words removal
+    #await preprocess_documents()
     
     # Build Boolean model
     await build_boolean_model()
