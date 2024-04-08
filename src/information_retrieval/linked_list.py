@@ -72,3 +72,11 @@ class LinkedList:
             current = current.next
         print()
         
+    def length(self):
+        count = 0
+        current = self.head
+        while current:
+            count += 1
+            current = current.next
+        return count
+        
