@@ -3,3 +3,6 @@ flask
 scikit-learn
 asyncio
 nltk
+bs4
+selenium
+pandas

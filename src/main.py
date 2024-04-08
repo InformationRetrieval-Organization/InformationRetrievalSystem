@@ -17,10 +17,10 @@ async def main():
     await init_database()
 
     # Crawl data from New York Times and store in database
-    await crawl_nyt_data()
+    # await crawl_nyt_data()
 
     #Preprocessing, steamming, stop words removal
-    #await preprocess_documents()
+    await preprocess_documents()
     
     # Build Boolean model
     await build_boolean_model()
