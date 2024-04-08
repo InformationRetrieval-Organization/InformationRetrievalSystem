@@ -2,3 +2,6 @@ prisma
 flask
 scikit-learn
 asyncio
+bs4
+selenium
+pandas

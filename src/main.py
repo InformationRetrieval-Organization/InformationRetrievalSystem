@@ -16,7 +16,7 @@ async def main():
     await init_database()
 
     # Crawl data from New York Times and store in database
-    await crawl_nyt_data()
+    # await crawl_nyt_data()
 
     #Todo: Preprocessing, steamming, stop words removal, etc.
     
