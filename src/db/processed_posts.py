@@ -5,15 +5,15 @@ from db.decorators import inject_service_provider
 from db.service_provider import ServiceProvider
 
 @inject_service_provider
-async def get_all_posts(service_provider: ServiceProvider) -> list[models.Processed_Post]:
+async def get_all_processed_posts(service_provider: ServiceProvider) -> list[models.Processed_Post]:
     try:
         prisma = await service_provider.get_prisma()
         return await prisma.processed_post.find_many()
     except Exception as e:
-        print(f"An error occurred while fetching posts: {e}")
+        print(f"An error occurred while fetching processed_posts: {e}")
 
 @inject_service_provider
-async def create_post(service_provider: ServiceProvider, id: int, content: str) -> models.Processed_Post:
+async def create_processed_post(service_provider: ServiceProvider, id: int, content: str) -> models.Processed_Post:
     try:
         prisma = await service_provider.get_prisma()
         return await prisma.processed_post.create(
@@ -23,12 +23,12 @@ async def create_post(service_provider: ServiceProvider, id: int, content: str) 
             }
         )
     except Exception as e:
-        print(f"An error occurred while creating the post: {e}")
+        print(f"An error occurred while creating the processed_post: {e}")
 
 @inject_service_provider
-async def delete_posts(service_provider: ServiceProvider) -> None:
+async def delete_processed_posts(service_provider: ServiceProvider) -> None:
     try:
         prisma = await service_provider.get_prisma()
         await prisma.processed_post.delete_many()
     except Exception as e:
-        print(f"An error occurred while deleting posts: {e}")
+        print(f"An error occurred while deleting processed_posts: {e}")
