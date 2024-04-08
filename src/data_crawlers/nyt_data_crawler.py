@@ -1,6 +1,6 @@
+# standalone script to crawl data from NYT
 import os
 from datetime import datetime
-from db.posts import get_all_posts, create_post
 import requests
 from bs4 import BeautifulSoup
 from selenium import webdriver
@@ -9,12 +9,16 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
-import os
+from selenium.common.exceptions import TimeoutException
+import asyncio
+import pandas as pd
 
 async def crawl_nyt_data() -> None:
     nyt_api_key = os.getenv("NYT_API_KEY")
     begin_date = datetime.strptime("20240401", "%Y%m%d").date()
     end_date = datetime.strptime("20240410", "%Y%m%d").date()
+    cwd = os.getcwd()
+    file_path = os.path.join(cwd, 'files', 'Post.csv')
 
     # Log in to NYT
     driver = login_nyt()  # Perform login using the driver
@@ -30,6 +34,7 @@ async def crawl_nyt_data() -> None:
         if not articles:
             break
 
+        data = []
         for article in articles:
             full_text = get_full_article(article["web_url"], driver)
             published_on = datetime.fromisoformat(article["pub_date"])
@@ -38,13 +43,16 @@ async def crawl_nyt_data() -> None:
             print (article["web_url"]) 
             print (full_text)
             print("====================================")    
-            
-            await create_post(
-                title=article["headline"]["main"], 
-                content=full_text, 
-                published_on=published_on,
-                link=article["web_url"]
-            )   
+
+            data.append({
+                'title': article["headline"]["main"], 
+                'content': full_text, 
+                'published_on': published_on,
+                'link': article["web_url"]
+            })   
+
+        df = pd.DataFrame(data)
+        df.to_csv(file_path, index=False)
 
         page += 1
 
@@ -81,7 +89,11 @@ def get_full_article(url, driver):
     driver.get(url)
       
     # Wait up to 10 seconds for the body tag to appear
-    WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.TAG_NAME, "body")))
+    try:
+        WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.TAG_NAME, "articleBody")))
+    except TimeoutException:
+        print(f"TimeoutException: Element with tag name 'articleBody' not found on {url}")
+        return None
 
     soup = BeautifulSoup(driver.page_source, 'html.parser')  # Parse the HTML from the webdriver
 
@@ -129,3 +141,6 @@ def login_nyt():
     input("Press Enter after you have completed the verification...")
 
     return driver
+
+if __name__ == "__main__":
+    asyncio.run(crawl_nyt_data())
