@@ -17,10 +17,10 @@ async def crawl_nyt_data() -> None:
 
     for article in articles:
         await create_post(
-            article["headline"]["main"], 
-            article["abstract"], 
-            article["pub_date"], 
-            article["web_url"]
+            title=article["headline"]["main"], 
+            content=article["abstract"], 
+            published_on=article["pub_date"], 
+            link=article["web_url"]
         )
 
     # print all posts
