@@ -14,6 +14,9 @@ This is a template for creating applications using Next.js 13 (app directory) an
 
 ## How to Use
 
+### environment variables
+* copy and rename the `.env.sample` file to `.env`
+* add your `NYT_API_KEY` API key
 
 ### Install dependencies
 
