@@ -12,8 +12,6 @@ async def preprocess_documents() -> list[str]:
     # Get the posts from the database
     posts = await get_all_posts()
     posts = [(post.id, post.content) for post in posts]
-    for post in posts:  
-        print(post[0], post[1])
     
     # Download the necessary resources
     nltk.download('punkt')
@@ -36,7 +34,6 @@ async def preprocess_documents() -> list[str]:
         tokens = [lemmatizer.lemmatize(token) for token in tokens]
 
         #create DB entry
-        print(post[0], ' '.join(tokens))
         await create_processed_post(
                 id=post[0],
                 content=' '.join(tokens)

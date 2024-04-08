@@ -1,4 +1,5 @@
 from flask import Blueprint, request
+import nltk
 
 from information_retrieval.boolean_model import search_boolean_model
 
@@ -10,8 +11,12 @@ boolean_search_blueprint = Blueprint('boolean_search', __name__)
 def search_post():
     json = request.get_json()
     
-    operator_value_list = [] 
+    operator_value_list = []
+    lemmatizer = nltk.stem.WordNetLemmatizer()
+ 
     for item in json:
-        operator_value_list.append((item['operator'], item['value'])) 
-    
+        word = lemmatizer.lemmatize(item['value'].lower())
+        operator_value_list.append((item['operator'], word.lower))
+        print(item['operator'], word)
+        
     return search_boolean_model(operator_value_list)

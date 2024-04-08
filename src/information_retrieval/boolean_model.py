@@ -1,7 +1,7 @@
 # https://github.com/InformationRetrieval-Organization/InformationRetrievalSystem/issues/3
 
 from sklearn.feature_extraction.text import TfidfVectorizer
-from db.posts import get_all_posts, create_post
+from db.processed_posts import get_all_processed_posts 
 from information_retrieval.linked_list import LinkedList
 
 _inverted_index = {} # Store Posting Lists in a dictionary with the word as the key and the value as a list of post_ids
@@ -13,7 +13,7 @@ async def build_boolean_model():
     global _term_frequency 
     
     # Get all posts content
-    posts = await get_all_posts()
+    posts = await get_all_processed_posts()
     posts = [(post.id, post.content) for post in posts]
 
     # Create the Postinglists and map the term frequency
