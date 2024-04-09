@@ -1,11 +1,6 @@
 import { Button, Accordion, AccordionItem, Select, SelectItem, Input } from "@nextui-org/react";
 import { MinusIcon, PlusIcon } from "@/components/icons";
 
-interface Filter {
-    operator: string;
-    value: string;
-}
-
 interface AdvancedFilterProps {
     filters: Filter[];
     setFilters: React.Dispatch<React.SetStateAction<Filter[]>>;

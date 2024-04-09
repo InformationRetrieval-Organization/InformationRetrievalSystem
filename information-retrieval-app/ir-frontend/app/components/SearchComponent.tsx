@@ -1,63 +1,33 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Divider, Input } from "@nextui-org/react";
 import { SearchIcon } from "../../components/icons";
 import ResultsList from "./ResultsList";
 import AdvancedFilter from "./AdvancedFilter";
-import { getData, postData } from '../api/information_retrieval';
-
-const sample: SearchResult[] = [
-    {
-        title: "Sample Result 1",
-        subtitle: "Subtitle 1",
-        link: "http://example.com/1",
-        timestamp: "2022-01-01T00:00:00Z",
-        content: "This is the content of Sample Result 1",
-    },
-    {
-        title: "Sample Result 2",
-        subtitle: "Subtitle 2",
-        link: "http://example.com/2",
-        timestamp: "2022-01-02T00:00:00Z",
-        content: "This is the content of Sample Result 2",
-    },
-    {
-        title: "Sample Result 3",
-        subtitle: "Subtitle 3",
-        link: "http://example.com/3",
-        timestamp: "2022-01-03T00:00:00Z",
-        content: "This is the content of Sample Result 3",
-    },
-];
+import { getBooleanArticles, getVectorSpaceArticles } from '../api/information_retrieval';
 
 const SearchComponent = ({ searchType }: { searchType: string }) => {
     const [inputValue, setInputValue] = useState("");
-    const [results, setResults] = useState<SearchResult[] | null>(null);
-    const [filters, setFilters] = useState([{ operator: "AND", value: "" }]);
+    const [results, setResults] = useState<ArticleResult[] | null>(null);
+    const [filters, setFilters] = useState<Filter[]>([{ operator: "AND", value: "" }]);
 
-    const handleSearch = async () => {
+    const fetchData = async () => {
         try {
             let url = '';
+            let data = null;
 
             if (searchType === 'vector-space') {
-                url = `/search/${searchType}?q=${inputValue}`;
-
-                const data = await getData(url);
-                setResults(data);
+                url = `/search/${searchType}?q=${inputValue.replace(/\s/g, '+')}`;
+                data = await getBooleanArticles(url);
             } else if (searchType === 'boolean') {
                 url = `/search/${searchType}`;
-
-                // add big input field to filters with AND operator
-                const body = {
-                    filters: [{ operator: "AND", value: inputValue }, ...filters]
-                };
-
-                const data = await postData(url, body);
-                setResults(data);
+                const body = [{ operator: "AND", value: inputValue }, ...filters];
+                data = await getVectorSpaceArticles(url, body);
             }
+
+            setResults(data);
         } catch (error) {
             console.error("Failed to fetch data:", error);
-            setResults(sample);
         }
     };
 
@@ -72,7 +42,7 @@ const SearchComponent = ({ searchType }: { searchType: string }) => {
                     type="search"
                 />
 
-                <Button isIconOnly color="primary" variant="solid" size="lg" onClick={handleSearch}>
+                <Button isIconOnly color="primary" variant="solid" size="lg" onClick={fetchData}>
                     <SearchIcon size={18} />
                 </Button>
             </div>
