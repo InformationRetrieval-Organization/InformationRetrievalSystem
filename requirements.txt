@@ -9,3 +9,4 @@ selenium
 pandas
 marshmallow
 numpy
+matplotlib
