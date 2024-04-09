@@ -7,6 +7,7 @@ from information_retrieval.vector_space_model import build_vector_space_model
 from information_retrieval.boolean_model import build_boolean_model
 from preprocessing.preprocessing import preprocess_documents
 from db.helper import init_database
+import information_retrieval.globals
 
 app = Flask(__name__)
 app.register_blueprint(vector_space_search_blueprint)
@@ -15,6 +16,9 @@ app.register_blueprint(boolean_search_blueprint)
 async def main():
     # init the database
     await init_database()
+
+    # initiate globale variables
+    information_retrieval.globals.init()
 
     # Crawl data from New York Times and store in database
     # await crawl_nyt_data()

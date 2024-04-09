@@ -2,8 +2,7 @@
 # https://github.com/InformationRetrieval-Organization/InformationRetrievalSystem/issues/4
 import math
 from db.processed_posts import get_all_processed_posts
-from boolean_model import _inverted_index
-from preprocessing import get_all_processed_posts
+import information_retrieval.globals
 
 
 def search_vector_space(query):
@@ -21,7 +20,7 @@ async def build_vector_space_model():
     # Step 2: Calculate the document frequency (DF) for each term
     document_frequency = {}
     for term in vocabulary:
-        document_frequency[term] = len(_inverted_index[term])
+        document_frequency[term] = len(information_retrieval.globals._inverted_index[term])
 
     # Step 3: Calculate the inverse document frequency (IDF) for each term
     total_documents = len(posts)
