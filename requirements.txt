@@ -1,8 +1,9 @@
 prisma
-flask
+flask[async]
 scikit-learn
 asyncio
 nltk
 bs4
 selenium
 pandas
+marshmallow
