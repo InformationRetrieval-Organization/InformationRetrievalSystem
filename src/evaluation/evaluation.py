@@ -92,6 +92,7 @@ if __name__ == "__main__":
         )
 
     df = pd.DataFrame(results)
+    print(df)
     print(df.describe())
 
     df.set_index("query").plot(kind="bar", subplots=True, layout=(2, 3), legend=False)
