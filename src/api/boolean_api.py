@@ -4,8 +4,12 @@ import nltk
 from information_retrieval.boolean_model import search_boolean_model
 from db.posts import get_all_posts
 from marshmallow import Schema, fields
+from flask_cors import CORS
 
 boolean_search_blueprint = Blueprint('boolean_search', __name__)
+
+CORS(boolean_search_blueprint)
+
 # Boolean Model endpoint
 # http://127.0.0.1:5000/search/boolean
 @boolean_search_blueprint.route('/search/boolean', methods=['POST'])

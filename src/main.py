@@ -7,10 +7,14 @@ from information_retrieval.boolean_model import build_boolean_model
 from preprocessing.preprocessing import preprocess_documents
 from db.helper import init_database
 import information_retrieval.globals
+from flask_cors import CORS
 
 app = Flask(__name__)
 app.register_blueprint(vector_space_search_blueprint)
 app.register_blueprint(boolean_search_blueprint)
+
+# Enable CORS for the Flask app
+CORS(app)
 
 async def main():
     """

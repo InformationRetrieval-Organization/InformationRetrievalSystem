@@ -1,5 +1,6 @@
 prisma
 flask[async]
+flask-cors
 scikit-learn
 asyncio
 nltk
