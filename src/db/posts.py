@@ -30,6 +30,8 @@ async def create_post(service_provider: ServiceProvider, title: str, content: st
 
 @inject_service_provider
 async def delete_posts(service_provider: ServiceProvider) -> None:
+    print("Deleting all posts")
+
     try:
         prisma = await service_provider.get_prisma()
         await prisma.post.delete_many()

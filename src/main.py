@@ -17,22 +17,19 @@ async def main():
     # init the database
     await init_database()
 
-    # initiate globale variables
+    # initiate global variables
     information_retrieval.globals.init()
 
-    # Crawl data from New York Times and store in database
-    # await crawl_nyt_data()
-
-    #Preprocessing, steamming, stop words removal
+    # preprocessing, stemming, stop words removal
     vocabulary = await preprocess_documents()
     
-    # Build Boolean model
+    # build Boolean model
     await build_boolean_model()
     
-    # Build the vector space model
+    # build the vector space model
     await build_vector_space_model(vocabulary)
 
-    # Run the Flask app
+    # run the Flask app
     app.run(debug=True)
 
 if __name__ == "__main__":

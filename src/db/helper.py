@@ -11,6 +11,7 @@ async def init_database():
     await insert_posts()
 
 async def insert_posts():
+    print("Inserting articles from files into the database")
     cwd = os.getcwd()
     files_path = os.path.join(cwd, 'files', '*.csv')
 

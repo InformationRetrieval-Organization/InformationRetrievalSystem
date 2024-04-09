@@ -27,6 +27,8 @@ async def create_processed_post(service_provider: ServiceProvider, id: int, cont
 
 @inject_service_provider
 async def delete_processed_posts(service_provider: ServiceProvider) -> None:
+    print("Deleting all processed_posts")
+    
     try:
         prisma = await service_provider.get_prisma()
         await prisma.processed_post.delete_many()
