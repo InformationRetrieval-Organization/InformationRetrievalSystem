@@ -37,6 +37,7 @@ async def preprocess_documents() -> list[str]:
     
         # Remove non-english words
         english_words = set(nltk.corpus.words.words())
+        english_words.add('korea')
         content = " ".join(w for w in nltk.wordpunct_tokenize(content) if w.lower() in english_words or not w.isalpha())
         
         # Tokenize the document
