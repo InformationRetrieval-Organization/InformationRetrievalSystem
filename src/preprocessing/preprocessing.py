@@ -39,6 +39,6 @@ async def preprocess_documents() -> list[str]:
                 content=' '.join(tokens)
             )
         
-        list_of_tokens.append(tokens)
+        list_of_tokens.append(set(tokens))
         
     return list_of_tokens

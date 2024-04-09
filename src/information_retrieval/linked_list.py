@@ -30,16 +30,18 @@ class LinkedList:
             
     def insertSorted(self, data):
         new_node = Node(data)
-        if self.is_empty() or self.head.data >= new_node.data: # if the list is empty or the data is smaller than the head
+        if self.is_empty() or self.head.data > new_node.data: # if the list is empty or the data is smaller than the head
             new_node.next = self.head
             self.head = new_node
         else:
             current = self.head
-            while current.next != None and current.next.data < new_node.data: # find the right position to insert
+            while current.next and current.next.data < new_node.data: # find the right position to insert
                 current = current.next
-                if current.data == new_node.data:   # if the data is already in the list, don't insert it again
-                    return
-            new_node.next = current.next
+                
+            if current.next is not None and current.next.data == new_node.data:   # if the data is already in the next node, don't insert it again
+                return   
+                 
+            new_node.next = current.next # insert the new node
             current.next = new_node
 
     def delete(self, data):
