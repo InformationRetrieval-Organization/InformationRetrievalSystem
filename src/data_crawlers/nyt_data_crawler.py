@@ -1,4 +1,3 @@
-# standalone script to crawl data from NYT
 import os
 from datetime import datetime
 import requests
@@ -12,20 +11,27 @@ from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import TimeoutException
 import asyncio
 import pandas as pd
+from dotenv import load_dotenv
+
+load_dotenv()
+
+def get_nyt_api_key():
+    return os.getenv("NYT_API_KEY")
+
+def get_file_path():
+    cwd = os.getcwd()
+    return os.path.join(cwd, 'files', 'New York Times.csv')
 
 async def crawl_nyt_data() -> None:
-    nyt_api_key = os.getenv("NYT_API_KEY")
+    nyt_api_key = get_nyt_api_key
     begin_date = datetime.strptime("20240401", "%Y%m%d").date()
     end_date = datetime.strptime("20240410", "%Y%m%d").date()
-    cwd = os.getcwd()
-    file_path = os.path.join(cwd, 'files', 'Post.csv')
+    file_path = get_file_path()
 
-    # Check if file exists then delete it
     if os.path.exists(file_path):
         os.remove(file_path)
 
-    # Log in to NYT
-    driver = login_nyt()  # Perform login using the driver
+    driver = login_nyt()
 
     # because there is a limit of 10 articles per page, we need to loop through all pages
     page = 1
@@ -41,35 +47,19 @@ async def crawl_nyt_data() -> None:
         data = []
         for article in articles:
             full_text = get_full_article(article["web_url"], driver)
-            published_on = datetime.fromisoformat(article["pub_date"])
-
-            print (article["headline"]["main"])
-            print (article["web_url"]) 
-            print (full_text)
-            print("====================================")    
+            published_on = datetime.fromisoformat(article["pub_date"])   
 
             data.append({
                 'title': article["headline"]["main"], 
                 'content': full_text, 
                 'published_on': published_on,
-                'link': article["web_url"]
+                'link': article["web_url"],
+                'source': "New York Times"
             })   
 
-        df = pd.DataFrame(data)
-        # Check if file exists, if not, write headers
-        if not os.path.isfile(file_path):
-            df.to_csv(file_path, index=False)
-        else:  # else it exists so append without writing the header
-            df.to_csv(file_path, mode='a', header=False, index=False)
+        write_to_csv(file_path, data)
 
         page += 1
-
-    """
-    # print all posts
-    posts = await get_all_posts()
-    for post in posts:
-        print(post) 
-    """
 
     driver.quit()
 
@@ -91,6 +81,13 @@ def get_articles(query, begin_date, end_date, api_key, page=1):
         return response.json()["response"]["docs"]
     else:
         return None
+
+def write_to_csv(file_path, data):
+    df = pd.DataFrame(data)
+    if not os.path.isfile(file_path):
+        df.to_csv(file_path, index=False)
+    else:
+        df.to_csv(file_path, mode='a', header=False, index=False)
 
 def get_full_article(url, driver):
     # Use the provided webdriver to access the logged-in session
