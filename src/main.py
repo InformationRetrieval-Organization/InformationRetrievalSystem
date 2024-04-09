@@ -14,22 +14,16 @@ app.register_blueprint(vector_space_search_blueprint)
 app.register_blueprint(boolean_search_blueprint)
 
 async def main():
-    # init the database
+    """
+    Main function to run the Flask app
+    """
     await init_database()
 
-    # initiate global variables
     information_retrieval.globals.init()
-
-    # preprocessing, stemming, stop words removal
-    vocabulary = await preprocess_documents()
-    
-    # build Boolean model
+    vocabulary = await preprocess_documents() 
     await build_boolean_model()
-    
-    # build the vector space model
     await build_vector_space_model(vocabulary)
 
-    # run the Flask app
     app.run(debug=True)
 
 if __name__ == "__main__":

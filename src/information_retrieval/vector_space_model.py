@@ -11,6 +11,9 @@ def search_vector_space(query):
     return query
 
 async def build_vector_space_model(vocabulary):
+    """
+    Build the Vector Space Model
+    """
     print("Building Vector Space Model")
         
     posts = await get_all_processed_posts()

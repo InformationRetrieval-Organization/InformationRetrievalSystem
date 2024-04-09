@@ -7,6 +7,9 @@ import pandas as pd
 import os
 
 async def build_boolean_model():
+    """
+    Build the Boolean Model
+    """
     print("Building Boolean Model")
     csv_name = delete_old_csv() # Delete the old csv file if it exists
     

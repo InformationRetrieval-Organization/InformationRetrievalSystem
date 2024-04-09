@@ -1,4 +1,7 @@
 def init():
+    """
+    Initialize the global variables
+    """
     global _inverted_index
     global _term_frequency
     global _all_doc_ids

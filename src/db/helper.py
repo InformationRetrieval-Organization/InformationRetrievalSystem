@@ -5,12 +5,20 @@ import os
 from dateutil.parser import parse
 import glob
 
+
 async def init_database():
+    """
+    Initialize the database by deleting the existing posts and processed_posts and inserting the articles from the files into the database
+    """
+    
     await delete_posts()
     await delete_processed_posts()
     await insert_posts()
 
 async def insert_posts():
+    """
+    Insert articles from files into the database
+    """
     print("Inserting articles from files into the database")
     cwd = os.getcwd()
     files_path = os.path.join(cwd, 'files', '*.csv')

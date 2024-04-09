@@ -7,6 +7,9 @@ from db.processed_posts import create_processed_post
 from db.posts import get_all_posts
 
 async def preprocess_documents() -> list[str]:
+    """
+    Preprocesses the documents in the database and returns a list of tokens.
+    """
     list_of_tokens = []
     
     # Get the posts from the database
