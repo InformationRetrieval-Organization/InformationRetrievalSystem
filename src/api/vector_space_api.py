@@ -15,11 +15,11 @@ async def search_vector_space_model():
     lemmatizer = nltk.stem.WordNetLemmatizer()
     lemmatized_query = list()
     
-    for word in query.split("+"):
+    for word in query.split():
         word = lemmatizer.lemmatize(word.lower())
         lemmatized_query.append(word)
                 
-    id_list = search_vector_space(lemmatized_query)
+    id_list = await search_vector_space(lemmatized_query)
         
     posts = await get_all_posts()
     filtered_posts = [post for post in posts if post.id in id_list]

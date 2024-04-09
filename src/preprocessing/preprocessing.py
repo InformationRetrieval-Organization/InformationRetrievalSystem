@@ -5,6 +5,7 @@ from nltk.tokenize import word_tokenize
 from nltk.stem import PorterStemmer
 from db.processed_posts import create_processed_post
 from db.posts import get_all_posts
+import information_retrieval.globals 
 
 async def preprocess_documents() -> list[str]:
     """
@@ -46,6 +47,7 @@ async def preprocess_documents() -> list[str]:
         list_of_tokens.extend(tokens)
     
     list_of_tokens = list(set(list_of_tokens))
+    information_retrieval.globals._vocabulary = list_of_tokens
     
     return list_of_tokens
 

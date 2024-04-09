@@ -16,15 +16,15 @@ async def search_vector_space(query):
     inverse_document_frequency = {}
     query_weight_matrix = []
 
-    for term in query:
+    for term in information_retrieval.globals._vocabulary:
         df = information_retrieval.globals._inverted_index[term].length()
         # Step 3: Calculate the inverse document frequency (IDF) for each term
         inverse_document_frequency[term] = compute_inverse_document_frequency(total_documents, df)
  
-    for post in posts:
-        #every post has its own vector creating this vector
-        tfidf_vector = [compute_tf_idf_weighting(compute_sublinear_tf_scaling(post[1].count(term)), inverse_document_frequency[term]) for term in query]
-        query_weight_matrix = tfidf_vector
+    #every post has its own vector creating this vector
+    tfidf_vector = [compute_tf_idf_weighting(compute_sublinear_tf_scaling(query.count(term)), inverse_document_frequency[term]) for term in information_retrieval.globals._vocabulary]
+    query_weight_matrix = tfidf_vector
+    print(tfidf_vector)
 
     doc_cosine_similiarity_map = {}
 
@@ -41,10 +41,12 @@ async def search_vector_space(query):
     
     return sorted_doc_ids
 
-async def build_vector_space_model(vocabulary):
+async def build_vector_space_model():
     """
     Build the Vector Space Model
     """
+    vocabulary = information_retrieval.globals._vocabulary
+    
     print("Building Vector Space Model")
         
     posts = await get_all_processed_posts()

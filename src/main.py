@@ -23,9 +23,9 @@ async def main():
     await init_database()
 
     information_retrieval.globals.init()
-    vocabulary = await preprocess_documents() 
+    await preprocess_documents() 
     await build_boolean_model()
-    await build_vector_space_model(vocabulary)
+    await build_vector_space_model()
 
     app.run(debug=True)
 
