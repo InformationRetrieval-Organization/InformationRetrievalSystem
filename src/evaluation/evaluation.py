@@ -8,14 +8,16 @@ base_url = "http://127.0.0.1:5000"
 boolean_api_url = f"{base_url}/search/boolean"
 vector_space_url = f"{base_url}/search/vector-space"
 
-queries = ["korea election", "president", "parties"]
+queries = ["korea", "election", "korea election", "president", "parties"]
 
 
 def calculate_recall_precision(relevant_docs, retrieved_docs):
     relevant_retrieved_docs = set(relevant_docs).intersection(set(retrieved_docs))
 
-    recall = len(relevant_retrieved_docs) / len(relevant_docs)
-    precision = len(relevant_retrieved_docs) / len(retrieved_docs)
+    recall = len(relevant_retrieved_docs) / len(relevant_docs) if relevant_docs else 0
+    precision = (
+        len(relevant_retrieved_docs) / len(retrieved_docs) if retrieved_docs else 0
+    )
 
     return recall, precision
 
@@ -40,8 +42,13 @@ def call_vector_space_api(query):
 
 
 def calculate_temporal_relevance(retrieved_docs):
+    if not retrieved_docs:
+        return None
+
     current_year = datetime.now().year
-    publication_years = [int(doc["published_on"].split('-')[0]) for doc in retrieved_docs]
+    publication_years = [
+        int(doc["published_on"].split("-")[0]) for doc in retrieved_docs
+    ]
     average_publication_year = sum(publication_years) / len(publication_years)
 
     return current_year - average_publication_year
