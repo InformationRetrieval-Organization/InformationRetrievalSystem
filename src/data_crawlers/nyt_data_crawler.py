@@ -24,7 +24,7 @@ def get_file_path():
 
 async def crawl_nyt_data() -> None:
     nyt_api_key = get_nyt_api_key
-    begin_date = datetime.strptime("20240401", "%Y%m%d").date()
+    begin_date = datetime.strptime("20240301", "%Y%m%d").date()
     end_date = datetime.strptime("20240410", "%Y%m%d").date()
     file_path = get_file_path()
 

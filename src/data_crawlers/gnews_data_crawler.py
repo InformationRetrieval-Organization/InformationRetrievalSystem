@@ -18,14 +18,15 @@ def get_gnews_data(api_key, begin_date, end_date):
     url = "https://gnews.io/api/v4/search"
     params = {
         "apikey": api_key,
-        "from": begin_date.strftime("%Y-%m-%d"),
-        "to": end_date.strftime("%Y-%m-%d"),
+        "from": begin_date.strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "to": end_date.strftime("%Y-%m-%dT%H:%M:%SZ"),
         "q": "korea",
         #"country": "us",
         "max": 50,
         "expand": "content"
     }
     response = requests.get(url, params=params)
+
     if response.status_code == 200:
         return response.json()["articles"]
     else:
@@ -33,7 +34,7 @@ def get_gnews_data(api_key, begin_date, end_date):
 
 def crawl_gnews_data() -> None:
     gnews_api_key = get_gnews_api_key()
-    begin_date = datetime.strptime("20240401", "%Y%m%d").date()
+    begin_date = datetime.strptime("20240301", "%Y%m%d").date()
     end_date = datetime.strptime("20240410", "%Y%m%d").date()
     file_path = get_file_path()
 
