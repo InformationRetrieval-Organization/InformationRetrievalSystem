@@ -17,6 +17,5 @@ def search_post():
     for item in json:
         word = lemmatizer.lemmatize(item['value'].lower())
         operator_value_list.append((item['operator'], word.lower))
-        print(item['operator'], word)
         
     return search_boolean_model(operator_value_list)
