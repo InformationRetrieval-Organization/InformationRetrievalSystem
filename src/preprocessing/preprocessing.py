@@ -6,6 +6,7 @@ from nltk.stem import PorterStemmer
 from db.processed_posts import create_one_processed_post, create_many_processed_posts
 from db.posts import get_all_posts
 import information_retrieval.globals 
+from nltk import FreqDist
 
 async def preprocess_documents() -> list[str]:
     """
@@ -13,6 +14,7 @@ async def preprocess_documents() -> list[str]:
     """
     list_of_tokens = []
     processed_posts = []
+    total_string = ""
     
     # Get the posts from the database
     posts = await get_all_posts()
@@ -22,20 +24,28 @@ async def preprocess_documents() -> list[str]:
     nltk.download('punkt')
     nltk.download('wordnet')
     nltk.download('stopwords')
-
+    nltk.download('words')
+    
     for post in posts:
+        total_string += post[1].lower()
+        
         # Remove special characters and convert to lowercase
         content = re.sub('[!\"#$%&\'()*+,-./:;<=>—?@[\]^_`{|}~0-9\n’“”]', '', post[1].lower())
-        if not isEnglish(content):
-            continue
+        
+        # Remove numerical values
+        content = re.sub(r'\d+', '', content)
+    
+        # Remove non-english words
+        english_words = set(nltk.corpus.words.words())
+        content = " ".join(w for w in nltk.wordpunct_tokenize(content) if w.lower() in english_words or not w.isalpha())
         
         # Tokenize the document
         tokens = word_tokenize(content)
 
         # Remove stopwords
         stop_words = set(stopwords.words('english'))
-        tokens = [token for token in tokens if token not in stop_words]
-
+        tokens = [token for token in tokens if token not in stop_words]        
+        
         # Lemmatize the tokens
         lemmatizer = nltk.stem.WordNetLemmatizer()
         tokens = [lemmatizer.lemmatize(token) for token in tokens]
@@ -54,7 +64,7 @@ async def preprocess_documents() -> list[str]:
     list_of_tokens = list(set(list_of_tokens))
     information_retrieval.globals._vocabulary = list_of_tokens
     
+    print("Length of Vocabulary: " + str(len(list_of_tokens)))
+    
     return list_of_tokens
 
-def isEnglish(s):
-  return s.isascii()
