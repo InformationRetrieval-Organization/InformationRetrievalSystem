@@ -7,10 +7,7 @@ import pandas as pd
 import os
 
 async def build_boolean_model():
-    csv_name = "inverted_index.csv"
-    file_path = os.path.join(os.getcwd(), csv_name)
-    if os.path.exists(file_path):
-        os.remove(file_path)
+    csv_name = delete_old_csv() # Delete the old csv file if it exists
     
     # Get all posts content
     posts = await get_all_processed_posts()
@@ -28,20 +25,12 @@ async def build_boolean_model():
                 information_retrieval.globals._inverted_index[word] = LinkedList(post[0])
                 information_retrieval.globals._term_frequency[word] = 1
     
-    print(information_retrieval.globals._term_frequency)
-    # Create a DataFrame to store the search results only for testing purposes
-    data = []
-    for key, values in information_retrieval.globals._inverted_index.items():
-        for value in values:
-            data.append({"Key": key, "Value": value})
-    
-    df = pd.DataFrame(data, columns=['Key', 'Value'])
-    df.to_csv(csv_name, index=False)
+    # Create a DataFrame to store the search results
+    create_csv(csv_name)
     
 def search_boolean_model(query):
     id_set = set(information_retrieval.globals._all_doc_ids)
-    print(information_retrieval.globals._all_doc_ids)
-    
+
     # First sort tokens by frequency
     try:
         sorted_query = sorted(query, key=lambda word: information_retrieval.globals._term_frequency[word[1]])
@@ -82,3 +71,19 @@ def _not_processing(word, id_set):
     except KeyError:
         pass    # If the word is not in the index, it is not necessary to remove it
     return id_set
+
+def create_csv(csv_name):
+    data = []
+    for key, values in information_retrieval.globals._inverted_index.items():
+        for value in values:
+            data.append({"Key": key, "Value": value})
+    
+    df = pd.DataFrame(data, columns=['Key', 'Value'])
+    df.to_csv(csv_name, index=False)
+
+def delete_old_csv():
+    csv_name = "inverted_index.csv"
+    file_path = os.path.join(os.getcwd(), csv_name)
+    if os.path.exists(file_path):
+        os.remove(file_path)
+    return csv_name
