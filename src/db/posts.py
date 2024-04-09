@@ -13,7 +13,7 @@ async def get_all_posts(service_provider: ServiceProvider) -> list[models.Post]:
         print(f"An error occurred while fetching posts: {e}")
 
 @inject_service_provider
-async def create_post(service_provider: ServiceProvider, title: str, content: str, published_on: datetime, link:str) -> models.Post:
+async def create_post(service_provider: ServiceProvider, title: str, content: str, published_on: datetime, link:str, source: str) -> models.Post:
     try:
         prisma = await service_provider.get_prisma()
         return await prisma.post.create(
@@ -22,6 +22,7 @@ async def create_post(service_provider: ServiceProvider, title: str, content: st
                 "content": content,
                 "published_on": published_on,
                 "link": link,
+                "source": source
             }
         )
     except Exception as e:

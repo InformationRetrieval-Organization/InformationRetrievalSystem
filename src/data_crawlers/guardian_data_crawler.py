@@ -64,7 +64,8 @@ async def crawl_guardian_data() -> None:
                 'title': result["webTitle"],
                 'content': full_text,
                 'published_on': result["webPublicationDate"],
-                'link': article_url
+                'link': article_url,
+                'source': "The Guardian"
             })
         write_to_csv(file_path, articles)
     else:

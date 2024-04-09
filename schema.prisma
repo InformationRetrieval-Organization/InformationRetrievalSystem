@@ -15,18 +15,10 @@ model Post {
   content      String?
   published_on DateTime @default(now())
   link         String?
-  author       User?    @relation(fields: [author_id], references: [id])
-  author_id    Int?
+  source       String? 
 }
 
 model Processed_Post {
   id           Int      @id 
   content      String?
-}
-
-model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
-  posts Post[]
 }
