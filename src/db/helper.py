@@ -1,6 +1,6 @@
 import pandas as pd
-from db.posts import create_post, delete_posts
-from db.processed_posts import delete_processed_posts
+from db.posts import create_many_posts, delete_all_posts
+from db.processed_posts import delete_all_processed_posts
 import os
 from dateutil.parser import parse
 import glob
@@ -11,8 +11,8 @@ async def init_database():
     Initialize the database by deleting the existing posts and processed_posts and inserting the articles from the files into the database
     """
 
-    await delete_posts()
-    await delete_processed_posts()
+    await delete_all_posts()
+    await delete_all_processed_posts()
     await insert_posts()
 
 
@@ -35,6 +35,7 @@ async def insert_posts():
 
         df = pd.read_csv(file_path)
 
+        posts = []
         # Iterate over the DataFrame and insert each row into the database
         for _, row in df.iterrows():
             published_on = parse(row["published_on"])
@@ -43,10 +44,15 @@ async def insert_posts():
                 content = None  # Convert NaN to None
             elif not isinstance(content, str):  # Check if content is not a string
                 content = str(content)  # Convert content to a string
-            await create_post(
-                title=row["title"],
-                content=content,
-                published_on=published_on,
-                link=row["link"],
-                source=row["source"],
+
+            posts.append(
+                {
+                    "title": row["title"],
+                    "content": content,
+                    "published_on": published_on,
+                    "link": row["link"],
+                    "source": row["source"],
+                }
             )
+
+        await create_many_posts(posts)

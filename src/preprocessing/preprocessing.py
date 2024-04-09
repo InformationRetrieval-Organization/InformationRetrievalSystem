@@ -3,7 +3,7 @@ import nltk
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from nltk.stem import PorterStemmer
-from db.processed_posts import create_processed_post
+from db.processed_posts import create_one_processed_post, create_many_processed_posts
 from db.posts import get_all_posts
 import information_retrieval.globals 
 
@@ -12,6 +12,7 @@ async def preprocess_documents() -> list[str]:
     Preprocesses the documents in the database and returns a list of tokens.
     """
     list_of_tokens = []
+    processed_posts = []
     
     # Get the posts from the database
     posts = await get_all_posts()
@@ -39,13 +40,17 @@ async def preprocess_documents() -> list[str]:
         lemmatizer = nltk.stem.WordNetLemmatizer()
         tokens = [lemmatizer.lemmatize(token) for token in tokens]
 
-        #create DB entry
-        await create_processed_post(
-                id=post[0],
-                content=' '.join(tokens)
-            )
+        # Add to processed_posts list
+        processed_posts.append({
+            "id": post[0],
+            "content": ' '.join(tokens)
+        })
+        
         list_of_tokens.extend(tokens)
     
+    # Create DB entries
+    await create_many_processed_posts(processed_posts)
+
     list_of_tokens = list(set(list_of_tokens))
     information_retrieval.globals._vocabulary = list_of_tokens
     

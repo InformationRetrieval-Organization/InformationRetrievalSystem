@@ -1,25 +1,43 @@
 import asyncio
 from datetime import datetime
-from prisma import models
-from db.decorators import inject_service_provider
-from db.service_provider import ServiceProvider
+from typing import Dict, List, Union
+from prisma import models, Prisma
 
 
-@inject_service_provider
-async def get_all_posts(service_provider: ServiceProvider) -> list[models.Post]:
+async def get_all_posts() -> List[models.Post]:
     """
     Fetch all posts from the database
     """
     try:
-        prisma = await service_provider.get_prisma()
-        return await prisma.post.find_many()
+        client = Prisma()
+        await client.connect()
+
+        return await client.post.find_many()
     except Exception as e:
         print(f"An error occurred while fetching posts: {e}")
+        return []
+    finally:
+        await client.disconnect()
 
 
-@inject_service_provider
-async def create_post(
-    service_provider: ServiceProvider,
+async def create_many_posts(
+    posts: List[Dict[str, Union[str, datetime]]]
+) -> List[models.Post]:
+    """
+    Create multiple posts in the database
+    """
+    try:
+        client = Prisma()
+        await client.connect()
+
+        return await client.post.create_many(data=posts)
+    except Exception as e:
+        print(f"An error occurred while creating the posts: {e}")
+    finally:
+        await client.disconnect()
+
+
+async def create_one_post(
     title: str,
     content: str,
     published_on: datetime,
@@ -30,8 +48,10 @@ async def create_post(
     Create a post in the database
     """
     try:
-        prisma = await service_provider.get_prisma()
-        return await prisma.post.create(
+        client = Prisma()
+        await client.connect()
+
+        return await client.post.create(
             data={
                 "title": title,
                 "content": content,
@@ -42,17 +62,22 @@ async def create_post(
         )
     except Exception as e:
         print(f"An error occurred while creating the post: {e}")
+    finally:
+        await client.disconnect()
 
 
-@inject_service_provider
-async def delete_posts(service_provider: ServiceProvider) -> None:
+async def delete_all_posts() -> None:
     """
     Delete all posts from the database
     """
     print("Deleting all posts")
 
     try:
-        prisma = await service_provider.get_prisma()
-        await prisma.post.delete_many()
+        client = Prisma()
+        await client.connect()
+
+        await client.post.delete_many()
     except Exception as e:
         print(f"An error occurred while deleting posts: {e}")
+    finally:
+        await client.disconnect()
