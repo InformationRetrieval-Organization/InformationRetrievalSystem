@@ -5,6 +5,7 @@ import os
 from datetime import datetime
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
+from data_crawlers.helper import write_to_csv
 
 load_dotenv()
 
@@ -35,13 +36,6 @@ def get_full_article(url):
     article_body = soup.find('div', {'id': 'maincontent'})
 
     return ' '.join([p.get_text() for p in article_body.find_all('p')]) if article_body else None
-
-def write_to_csv(file_path, articles):
-    df = pd.DataFrame(articles)
-    if not os.path.isfile(file_path):
-        df.to_csv(file_path, index=False)
-    else:
-        df.to_csv(file_path, mode='a', header=False, index=False)
 
 async def crawl_guardian_data() -> None:
     guardian_api_key = get_guardian_api_key()

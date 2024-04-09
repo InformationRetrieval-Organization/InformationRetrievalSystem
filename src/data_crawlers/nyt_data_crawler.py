@@ -12,6 +12,7 @@ from selenium.common.exceptions import TimeoutException
 import asyncio
 import pandas as pd
 from dotenv import load_dotenv
+from data_crawlers.helper import write_to_csv
 
 load_dotenv()
 
@@ -81,13 +82,6 @@ def get_articles(query, begin_date, end_date, api_key, page=1):
         return response.json()["response"]["docs"]
     else:
         return None
-
-def write_to_csv(file_path, data):
-    df = pd.DataFrame(data)
-    if not os.path.isfile(file_path):
-        df.to_csv(file_path, index=False)
-    else:
-        df.to_csv(file_path, mode='a', header=False, index=False)
 
 def get_full_article(url, driver):
     # Use the provided webdriver to access the logged-in session
