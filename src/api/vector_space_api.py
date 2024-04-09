@@ -23,6 +23,7 @@ async def search_vector_space_model():
         
     posts = await get_all_posts()
     filtered_posts = [post for post in posts if post.id in id_list]
+    filtered_posts = sorted(filtered_posts, key=lambda x: id_list.index(x.id))
         
     object_schema = ObjectSchema()
     json_string = object_schema.dumps(filtered_posts, many=True)
