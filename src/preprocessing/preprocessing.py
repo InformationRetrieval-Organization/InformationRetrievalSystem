@@ -18,6 +18,7 @@ async def preprocess_documents() -> list[str]:
     nltk.download('wordnet')
     nltk.download('stopwords')
     
+
     for post in posts:
         # Remove special characters and convert to lowercase
         content = re.sub('[!\"#$%&\'()*+,-./:;<=>—?@[\]^_`{|}~0-9\n’“”]', '', post[1].lower())
@@ -38,7 +39,8 @@ async def preprocess_documents() -> list[str]:
                 id=post[0],
                 content=' '.join(tokens)
             )
-        
-        list_of_tokens.append(set(tokens))
+        tokens = set(tokens)
+        for token in tokens:
+            list_of_tokens.append(token)
         
     return list_of_tokens
