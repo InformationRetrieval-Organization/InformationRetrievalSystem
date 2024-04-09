@@ -52,7 +52,8 @@ def crawl_gnews_data() -> None:
                 #'image': article["image"],
                 'published_on': article["publishedAt"],
                 #'source_name': article["source"]["name"],
-                'link': article["source"]["url"]
+                'link': article["source"]["url"],
+                'source': article["source"]["name"]
             })
 
         write_to_csv(file_path, data)
