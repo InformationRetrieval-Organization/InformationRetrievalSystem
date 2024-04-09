@@ -26,7 +26,6 @@ async def search_post():
     id_list = search_boolean_model(operator_value_list)
     
     posts = await get_all_posts()
-    print(len(posts))
     filtered_posts = [post for post in posts if post.id in id_list]
         
     object_schema = ObjectSchema()
