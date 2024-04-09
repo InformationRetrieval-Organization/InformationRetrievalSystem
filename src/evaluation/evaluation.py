@@ -8,7 +8,7 @@ base_url = "http://127.0.0.1:5000"
 boolean_api_url = f"{base_url}/search/boolean"
 vector_space_url = f"{base_url}/search/vector-space"
 
-queries = ["korea election", "president", "parties"]
+queries = ["korea", "election", "korea election", "president", "parties"]
 
 
 def calculate_recall_precision(relevant_docs, retrieved_docs):
