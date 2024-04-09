@@ -18,18 +18,14 @@ async def build_vector_space_model(vocabulary):
 
     # Step 2: Calculate the document frequency (DF) for each term
     document_frequency = {}
-    for term in vocabulary:
-        document_frequency[term] = information_retrieval.globals._inverted_index[term].length()
-    print(document_frequency)
-
-
-    # Step 3: Calculate the inverse document frequency (IDF) for each term
     total_documents = len(posts)
     inverse_document_frequency = {}
-    for term, df in document_frequency.items():
+    for term in vocabulary:
+        df = information_retrieval.globals._inverted_index[term].length()
+        # Step 3: Calculate the inverse document frequency (IDF) for each term
+        document_frequency[term] = df
         inverse_document_frequency[term] = compute_inverse_document_frequency(total_documents, df)
-
-    
+ 
     for post in posts:
         #every post has its own vector creating this vector
         tfidf_vector = []
@@ -40,8 +36,6 @@ async def build_vector_space_model(vocabulary):
             tfidf = compute_tf_idf_weighting(tf,idf)
             tfidf_vector.append(tfidf)
         information_retrieval.globals._term_document_weight_matrix.append(tfidf_vector)
-        #print(tfidf_vector)
-
 
     return None
 
