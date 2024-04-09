@@ -17,11 +17,12 @@ async def preprocess_documents() -> list[str]:
     nltk.download('punkt')
     nltk.download('wordnet')
     nltk.download('stopwords')
-    
 
     for post in posts:
         # Remove special characters and convert to lowercase
         content = re.sub('[!\"#$%&\'()*+,-./:;<=>—?@[\]^_`{|}~0-9\n’“”]', '', post[1].lower())
+        if not isEnglish(content):
+            continue
         
         # Tokenize the document
         tokens = word_tokenize(content)
@@ -39,8 +40,11 @@ async def preprocess_documents() -> list[str]:
                 id=post[0],
                 content=' '.join(tokens)
             )
-        tokens = set(tokens)
-        for token in tokens:
-            list_of_tokens.append(token)
-        
+        list_of_tokens.extend(tokens)
+    
+    list_of_tokens = list(set(list_of_tokens))
+    
     return list_of_tokens
+
+def isEnglish(s):
+  return s.isascii()

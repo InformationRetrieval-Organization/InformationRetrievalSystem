@@ -7,6 +7,7 @@ import pandas as pd
 import os
 
 async def build_boolean_model():
+    print("Building Boolean Model")
     csv_name = delete_old_csv() # Delete the old csv file if it exists
     
     # Get all posts content
@@ -27,8 +28,10 @@ async def build_boolean_model():
     
     # Create a DataFrame to store the search results
     create_csv(csv_name)
+    print("Boolean Model Built")
     
 def search_boolean_model(query):
+    print("Searching Boolean Model")
     id_set = set(information_retrieval.globals._all_doc_ids)
 
     # First sort tokens by frequency
@@ -46,6 +49,7 @@ def search_boolean_model(query):
         elif entry[0] == "NOT":
             id_set = _not_processing(entry[1], id_set)
             
+    print("Boolean Model Searched")
     return list(id_set)
 
 def _and_processing(word, id_set):
