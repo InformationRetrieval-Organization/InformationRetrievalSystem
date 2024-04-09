@@ -4,9 +4,14 @@ from db.processed_posts import get_all_processed_posts
 from information_retrieval.linked_list import LinkedList
 import information_retrieval.globals 
 import pandas as pd
+import os
 
 async def build_boolean_model():
-  
+    csv_name = "inverted_index.csv"
+    file_path = os.path.join(os.getcwd(), csv_name)
+    if os.path.exists(file_path):
+        os.remove(file_path)
+    
     # Get all posts content
     posts = await get_all_processed_posts()
     posts = [(post.id, post.content) for post in posts]
@@ -24,6 +29,14 @@ async def build_boolean_model():
                 information_retrieval.globals._term_frequency[word] = 1
     
     print(information_retrieval.globals._term_frequency)
+    # Create a DataFrame to store the search results only for testing purposes
+    data = []
+    for key, values in information_retrieval.globals._inverted_index.items():
+        for value in values:
+            data.append({"Key": key, "Value": value})
+    
+    df = pd.DataFrame(data, columns=['Key', 'Value'])
+    df.to_csv(csv_name, index=False)
     
 def search_boolean_model(query):
     id_set = set(information_retrieval.globals._all_doc_ids)
@@ -33,19 +46,7 @@ def search_boolean_model(query):
     try:
         sorted_query = sorted(query, key=lambda word: information_retrieval.globals._term_frequency[word[1]])
     except KeyError:
-        sorted_query = query
-                
-    # Create a DataFrame to store the search results only for testing purposes
-    df = pd.DataFrame(columns=['Posting List'])    
-    for key in information_retrieval.globals._inverted_index.keys():   
-        # Create a DataFrame with the search results
-        for values in information_retrieval.globals._inverted_index[key]:
-            if key == "comment":
-                print(values)
-            new_row = pd.DataFrame([{"Key": key, "Value": values}])
-            df = pd.concat([df, new_row], ignore_index=True)
-            
-    df.to_csv("search_results.csv", index=False)    
+        sorted_query = query  
     
     for entry in sorted_query:
         # Call different functions based on the operator
