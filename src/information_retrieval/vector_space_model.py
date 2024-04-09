@@ -24,7 +24,6 @@ async def search_vector_space(query):
     #every post has its own vector creating this vector
     tfidf_vector = [compute_tf_idf_weighting(compute_sublinear_tf_scaling(query.count(term)), inverse_document_frequency[term]) for term in information_retrieval.globals._vocabulary]
     query_weight_matrix = tfidf_vector
-    print(tfidf_vector)
 
     doc_cosine_similiarity_map = {}
 
