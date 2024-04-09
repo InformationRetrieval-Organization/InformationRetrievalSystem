@@ -24,13 +24,13 @@ async def main():
     # await crawl_nyt_data()
 
     #Preprocessing, steamming, stop words removal
-    await preprocess_documents()
+    vocabulary = await preprocess_documents()
     
     # Build Boolean model
     await build_boolean_model()
     
     # Build the vector space model
-    build_vector_space_model()
+    await build_vector_space_model(vocabulary)
 
     # Run the Flask app
     app.run(debug=True)
