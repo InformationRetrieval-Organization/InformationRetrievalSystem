@@ -5,11 +5,16 @@ global service_provider  # Not recommended for large applications
 service_provider = ServiceProvider()
 
 def get_service_provider():
-  return service_provider
+    """
+    Get the service provider
+    """
+    return service_provider
 
-# Decorator to inject the service provider into a function
-# allows to pass additional arguments to the function
 def inject_service_provider(func):
+    """
+    Decorator to inject the service provider into a function
+    allows to pass additional arguments to the function
+    """
     @wraps(func)
     async def wrapper(*args, **kwargs):
         service_provider = get_service_provider()

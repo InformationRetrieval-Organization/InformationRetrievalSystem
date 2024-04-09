@@ -10,10 +10,11 @@ async def init_database():
     """
     Initialize the database by deleting the existing posts and processed_posts and inserting the articles from the files into the database
     """
-    
+
     await delete_posts()
     await delete_processed_posts()
     await insert_posts()
+
 
 async def insert_posts():
     """
@@ -21,7 +22,7 @@ async def insert_posts():
     """
     print("Inserting articles from files into the database")
     cwd = os.getcwd()
-    files_path = os.path.join(cwd, 'files', '*.csv')
+    files_path = os.path.join(cwd, "files", "*.csv")
 
     # Get all CSV files in the directory
     csv_files = glob.glob(files_path)
@@ -36,10 +37,16 @@ async def insert_posts():
 
         # Iterate over the DataFrame and insert each row into the database
         for _, row in df.iterrows():
-            published_on = parse(row['published_on'])
-            content = row['content']
+            published_on = parse(row["published_on"])
+            content = row["content"]
             if pd.isnull(content):  # Check if content is NaN
                 content = None  # Convert NaN to None
             elif not isinstance(content, str):  # Check if content is not a string
                 content = str(content)  # Convert content to a string
-            await create_post(title=row['title'], content=content, published_on=published_on, link=row['link'], source = row['source'])
+            await create_post(
+                title=row["title"],
+                content=content,
+                published_on=published_on,
+                link=row["link"],
+                source=row["source"],
+            )
