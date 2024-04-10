@@ -16,6 +16,34 @@
             ],
             "jinja": true,
             "autoStartBrowser": false
+        },
+        {
+            "name": "Python: Evaluation Script",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/evaluation/evaluation.py",
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Python: GNews Script",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/data_crawlers/gnews_data_crawler.py",
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Python: Guardian Script",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/data_crawlers/guardian_data_crawler.py",
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Python: NYT Script",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/data_crawlers/nyt_data_crawler.py.py",
+            "console": "integratedTerminal"
         }
     ]
 }
