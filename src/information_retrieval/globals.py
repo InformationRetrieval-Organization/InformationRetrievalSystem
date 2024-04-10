@@ -12,8 +12,8 @@ def init():
     _inverted_index = {} # Store Posting Lists in a dictionary with the word as the key and the value as a list of post_ids
     _term_frequency = {} # Store the term frequency of each word
     _all_doc_ids = set() # Store all the document ids
-    _term_document_weight_matrix = []
-    _document_id_vector_map = {}
-    _vocabulary = []
+    _term_document_weight_matrix = [] # Is a two dimensional array with n Documentvectors
+    _document_id_vector_map= {} # Map each Documentid to the correct Vector
+    _vocabulary = [] # List of str
     
     
