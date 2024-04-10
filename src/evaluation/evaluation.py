@@ -4,28 +4,36 @@ from datetime import datetime, timezone
 import matplotlib.pyplot as plt
 import pandas as pd
 from datetime import datetime, timedelta
+import os
 
 base_url = "http://127.0.0.1:5000"
 boolean_api_url = f"{base_url}/search/boolean"
 vector_space_url = f"{base_url}/search/vector-space"
 
-queries = ["korea", "election", "korea election", "president", "parties"]
+# TODO: mark the relevant documents for each query manually
+# https://github.com/InformationRetrieval-Organization/InformationRetrievalSystem/issues/8
+queries = ['korea', 'election', 'korea election', 'president', 'parties', 'president parties']
 
 
-def calculate_recall_precision(relevant_docs, retrieved_docs):
+def evaluate_search_model(relevant_docs, retrieved_docs):
     """
-    Calculate recall and precision
-    TODO: mark the relevant documents in the retrieved documents manually
-    https://github.com/InformationRetrieval-Organization/InformationRetrievalSystem/issues/8
+    Calculate recall, precision, and F1 score
     """
     relevant_retrieved_docs = set(relevant_docs).intersection(set(retrieved_docs))
 
-    recall = len(relevant_retrieved_docs) / len(relevant_docs) if relevant_docs else 0
+    true_positives = len(relevant_retrieved_docs)
+    false_positives = len(retrieved_docs) - true_positives
+    false_negatives = len(relevant_docs) - true_positives
+
+    recall = true_positives / (true_positives + false_negatives) if relevant_docs else 0
     precision = (
-        len(relevant_retrieved_docs) / len(retrieved_docs) if retrieved_docs else 0
+        true_positives / (true_positives + false_positives) if retrieved_docs else 0
+    )
+    f1 = (
+        2 * precision * recall / (precision + recall) if (precision + recall) > 0 else 0
     )
 
-    return recall, precision
+    return recall, precision, f1
 
 
 def call_boolean_api(query):
@@ -82,6 +90,16 @@ def calculate_temporal_relevance(retrieved_docs):
     return difference_in_days
 
 
+def get_relevant_docs(query, ground_truth_df):
+    """
+    Get relevant documents for a given query from the ground truth DataFrame.
+    """
+    relevant_docs = ground_truth_df[ground_truth_df["query"] == query][
+        "document_id"
+    ].tolist()
+    return relevant_docs
+
+
 if __name__ == "__main__":
     """
     Evaluate Boolean and Vector Space Models
@@ -89,26 +107,33 @@ if __name__ == "__main__":
     print("Evaluating Boolean and Vector Space Models")
     print("===========================================")
 
+    # Load ground truth data
+    cwd = os.getcwd()
+    file_path = os.path.join(cwd, "src/evaluation", "ground_truth.csv")
+    ground_truth_df = pd.read_csv(file_path)
+
     results = []
 
     for query in queries:
         print(f"Query: {query}")
 
+        # Get relevant documents from ground truth
+        relevant_docs = get_relevant_docs(query, ground_truth_df)
+
         # Call Boolean and Vector Space APIs
         boolean_api_response = call_boolean_api(query)
         vector_space_api_response = call_vector_space_api(query)
 
-        # Get relevant and retrieved documents
-        relevant_docs = [doc["id"] for doc in vector_space_api_response]
-        boolean_retrieved_docs = [doc["id"] for doc in boolean_api_response]
-        vector_space_retrieved_docs = [doc["id"] for doc in vector_space_api_response]
+        # Get retrieved documents
+        boolean_retrieved_docs = sorted([int(doc["id"]) for doc in boolean_api_response])
+        vector_space_retrieved_docs = sorted([int(doc["id"]) for doc in vector_space_api_response])
 
-        # Calculate recall and precision
-        boolean_recall, boolean_precision = calculate_recall_precision(
+        # Calculate recall, precision, and F1 score
+        boolean_recall, boolean_precision, boolean_f1 = evaluate_search_model(
             relevant_docs, boolean_retrieved_docs
         )
-        vector_space_recall, vector_space_precision = calculate_recall_precision(
-            relevant_docs, vector_space_retrieved_docs
+        vector_space_recall, vector_space_precision, vector_space_f1 = (
+            evaluate_search_model(relevant_docs, vector_space_retrieved_docs)
         )
 
         # Calculate temporal relevance
@@ -122,9 +147,11 @@ if __name__ == "__main__":
                 "query": query,
                 "boolean_recall": boolean_recall,
                 "boolean_precision": boolean_precision,
+                "boolean_f1": boolean_f1,
                 "boolean_temporal_relevance": boolean_temporal_relevance,
                 "vector_space_recall": vector_space_recall,
                 "vector_space_precision": vector_space_precision,
+                "vector_space_f1": vector_space_f1,
                 "vector_space_temporal_relevance": vector_space_temporal_relevance,
             }
         )
@@ -133,6 +160,6 @@ if __name__ == "__main__":
     print(df)
     print(df.describe())
 
-    df.set_index("query").plot(kind="bar", subplots=True, layout=(2, 3), legend=False)
+    df.set_index("query").plot(kind="bar", subplots=True, layout=(2, 4), legend=False)
     plt.tight_layout()
     plt.show()

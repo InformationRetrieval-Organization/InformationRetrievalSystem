@@ -1,0 +1,1016 @@
+"query","document_id"
+"election",1
+"election",8
+"election",10
+"election",20
+"election",28
+"election",41
+"election",47
+"election",49
+"election",51
+"election",54
+"election",60
+"election",63
+"election",66
+"election",68
+"election",73
+"election",74
+"election",78
+"election",80
+"election",84
+"election",85
+"election",88
+"election",105
+"election",110
+"election",126
+"election",143
+"election",148
+"election",150
+"election",153
+"election",154
+"election",157
+"election",158
+"election",159
+"election",162
+"election",163
+"election",164
+"election",165
+"election",166
+"election",167
+"election",169
+"election",170
+"election",171
+"election",172
+"election",173
+"election",174
+"election",175
+"election",177
+"election",179
+"election",180
+"election",181
+"election",182
+"election",184
+"election",185
+"election",186
+"election",215
+"election",218
+"election",219
+"election",276
+"election",288
+"election",290
+"election",291
+"election",292
+"election",302
+"election",303
+"election",367
+"election",421
+"election",422
+"election",423
+"election",425
+"election",431
+"election",433
+"election",435
+"election",439
+"election",446
+"election",452
+"election",456
+"election",458
+"election",460
+"election",461
+"election",462
+"election",464
+"election",469
+"election",470
+"election",471
+"election",474
+"election",477
+"election",478
+"election",479
+"election",480
+"election",481
+"election",482
+"election",484
+"election",488
+"election",501
+"election",537
+"election",540
+"election",545
+"election",552
+"election",563
+"election",564
+"election",579
+"election",582
+"election",586
+"election",591
+"election",593
+"election",597
+"election",601
+"election",608
+"election",615
+"election",618
+"election",632
+"election",635
+"election",648
+"election",652
+"election",657
+"election",660
+"election",664
+"election",672
+"election",683
+"election",687
+"election",697
+"korea",1
+"korea",2
+"korea",3
+"korea",4
+"korea",5
+"korea",6
+"korea",7
+"korea",9
+"korea",11
+"korea",12
+"korea",13
+"korea",14
+"korea",15
+"korea",16
+"korea",18
+"korea",21
+"korea",22
+"korea",23
+"korea",24
+"korea",28
+"korea",29
+"korea",33
+"korea",37
+"korea",38
+"korea",41
+"korea",42
+"korea",45
+"korea",46
+"korea",47
+"korea",48
+"korea",49
+"korea",50
+"korea",51
+"korea",53
+"korea",54
+"korea",55
+"korea",56
+"korea",57
+"korea",58
+"korea",59
+"korea",60
+"korea",61
+"korea",62
+"korea",63
+"korea",64
+"korea",66
+"korea",67
+"korea",68
+"korea",69
+"korea",73
+"korea",74
+"korea",76
+"korea",77
+"korea",78
+"korea",80
+"korea",81
+"korea",83
+"korea",84
+"korea",85
+"korea",86
+"korea",87
+"korea",88
+"korea",89
+"korea",90
+"korea",91
+"korea",92
+"korea",93
+"korea",94
+"korea",95
+"korea",96
+"korea",97
+"korea",98
+"korea",99
+"korea",100
+"korea",101
+"korea",102
+"korea",103
+"korea",104
+"korea",105
+"korea",106
+"korea",107
+"korea",108
+"korea",109
+"korea",110
+"korea",111
+"korea",112
+"korea",113
+"korea",114
+"korea",115
+"korea",119
+"korea",120
+"korea",121
+"korea",122
+"korea",123
+"korea",124
+"korea",126
+"korea",127
+"korea",128
+"korea",129
+"korea",131
+"korea",132
+"korea",133
+"korea",134
+"korea",135
+"korea",136
+"korea",137
+"korea",138
+"korea",139
+"korea",142
+"korea",143
+"korea",144
+"korea",145
+"korea",146
+"korea",147
+"korea",148
+"korea",149
+"korea",150
+"korea",152
+"korea",153
+"korea",154
+"korea",155
+"korea",156
+"korea",157
+"korea",158
+"korea",159
+"korea",160
+"korea",162
+"korea",163
+"korea",164
+"korea",165
+"korea",166
+"korea",167
+"korea",168
+"korea",169
+"korea",170
+"korea",171
+"korea",172
+"korea",173
+"korea",174
+"korea",175
+"korea",176
+"korea",177
+"korea",178
+"korea",179
+"korea",180
+"korea",181
+"korea",182
+"korea",183
+"korea",184
+"korea",185
+"korea",186
+"korea",187
+"korea",188
+"korea",190
+"korea",191
+"korea",192
+"korea",193
+"korea",194
+"korea",195
+"korea",196
+"korea",197
+"korea",198
+"korea",200
+"korea",201
+"korea",202
+"korea",204
+"korea",205
+"korea",206
+"korea",208
+"korea",209
+"korea",210
+"korea",211
+"korea",212
+"korea",213
+"korea",214
+"korea",215
+"korea",218
+"korea",219
+"korea",220
+"korea",221
+"korea",222
+"korea",223
+"korea",225
+"korea",226
+"korea",227
+"korea",228
+"korea",229
+"korea",230
+"korea",231
+"korea",232
+"korea",234
+"korea",235
+"korea",236
+"korea",237
+"korea",238
+"korea",239
+"korea",240
+"korea",241
+"korea",242
+"korea",243
+"korea",244
+"korea",245
+"korea",248
+"korea",249
+"korea",251
+"korea",252
+"korea",253
+"korea",254
+"korea",255
+"korea",256
+"korea",257
+"korea",258
+"korea",259
+"korea",260
+"korea",262
+"korea",263
+"korea",264
+"korea",266
+"korea",267
+"korea",268
+"korea",269
+"korea",270
+"korea",271
+"korea",272
+"korea",273
+"korea",274
+"korea",275
+"korea",276
+"korea",278
+"korea",279
+"korea",282
+"korea",284
+"korea",285
+"korea",286
+"korea",287
+"korea",288
+"korea",289
+"korea",290
+"korea",291
+"korea",292
+"korea",293
+"korea",294
+"korea",295
+"korea",297
+"korea",298
+"korea",299
+"korea",300
+"korea",301
+"korea",302
+"korea",303
+"korea",304
+"korea",305
+"korea",308
+"korea",309
+"korea",310
+"korea",311
+"korea",312
+"korea",313
+"korea",314
+"korea",315
+"korea",317
+"korea",318
+"korea",319
+"korea",320
+"korea",321
+"korea",322
+"korea",323
+"korea",324
+"korea",335
+"korea",338
+"korea",339
+"korea",340
+"korea",341
+"korea",342
+"korea",343
+"korea",344
+"korea",345
+"korea",347
+"korea",348
+"korea",349
+"korea",350
+"korea",351
+"korea",352
+"korea",353
+"korea",354
+"korea",355
+"korea",356
+"korea",357
+"korea",358
+"korea",359
+"korea",360
+"korea",361
+"korea",362
+"korea",363
+"korea",364
+"korea",365
+"korea",366
+"korea",367
+"korea",368
+"korea",369
+"korea",371
+"korea",372
+"korea",373
+"korea",374
+"korea",375
+"korea",376
+"korea",378
+"korea",379
+"korea",380
+"korea",381
+"korea",382
+"korea",383
+"korea",384
+"korea",385
+"korea",386
+"korea",387
+"korea",388
+"korea",389
+"korea",390
+"korea",391
+"korea",392
+"korea",393
+"korea",394
+"korea",396
+"korea",398
+"korea",399
+"korea",400
+"korea",401
+"korea",402
+"korea",403
+"korea",404
+"korea",405
+"korea",406
+"korea",407
+"korea",408
+"korea",409
+"korea",410
+"korea",412
+"korea",414
+"korea",415
+"korea",416
+"korea",417
+"korea",418
+"korea",419
+"korea",420
+"korea",421
+"korea",422
+"korea",423
+"korea",424
+"korea",425
+"korea",426
+"korea",427
+"korea",429
+"korea",430
+"korea",431
+"korea",432
+"korea",434
+"korea",435
+"korea",436
+"korea",437
+"korea",438
+"korea",439
+"korea",440
+"korea",442
+"korea",443
+"korea",445
+"korea",446
+"korea",447
+"korea",448
+"korea",449
+"korea",450
+"korea",452
+"korea",453
+"korea",454
+"korea",455
+"korea",456
+"korea",457
+"korea",458
+"korea",459
+"korea",460
+"korea",461
+"korea",462
+"korea",463
+"korea",464
+"korea",467
+"korea",468
+"korea",469
+"korea",470
+"korea",471
+"korea",472
+"korea",473
+"korea",474
+"korea",475
+"korea",476
+"korea",477
+"korea",478
+"korea",479
+"korea",480
+"korea",481
+"korea",482
+"korea",484
+"korea",485
+"korea",486
+"korea",488
+"korea",489
+"korea",490
+"korea",491
+"korea",492
+"korea",493
+"korea",494
+"korea",495
+"korea",496
+"korea",498
+"korea",499
+"korea",500
+"korea",501
+"korea",502
+"korea",505
+"korea",506
+"korea",507
+"korea",508
+"korea",509
+"korea",511
+"korea",514
+"korea",515
+"korea",516
+"korea",517
+"korea",518
+"korea",519
+"korea",520
+"korea",521
+"korea",524
+"korea",525
+"korea",526
+"korea",527
+"korea",528
+"korea",529
+"korea",530
+"korea",531
+"korea",532
+"korea",533
+"korea",534
+"korea",535
+"korea",536
+"korea",537
+"korea",539
+"korea",540
+"korea",541
+"korea",542
+"korea",543
+"korea",545
+"korea",546
+"korea",547
+"korea",548
+"korea",549
+"korea",550
+"korea",551
+"korea",552
+"korea",554
+"korea",555
+"korea",558
+"korea",559
+"korea",561
+"korea",562
+"korea",563
+"korea",564
+"korea",565
+"korea",566
+"korea",570
+"korea",571
+"korea",572
+"korea",573
+"korea",574
+"korea",575
+"korea",577
+"korea",579
+"korea",580
+"korea",581
+"korea",582
+"korea",583
+"korea",584
+"korea",585
+"korea",586
+"korea",588
+"korea",589
+"korea",591
+"korea",593
+"korea",595
+"korea",596
+"korea",597
+"korea",599
+"korea",600
+"korea",601
+"korea",602
+"korea",604
+"korea",605
+"korea",606
+"korea",607
+"korea",608
+"korea",609
+"korea",610
+"korea",611
+"korea",612
+"korea",613
+"korea",614
+"korea",615
+"korea",617
+"korea",618
+"korea",619
+"korea",620
+"korea",621
+"korea",622
+"korea",623
+"korea",624
+"korea",625
+"korea",626
+"korea",628
+"korea",630
+"korea",631
+"korea",632
+"korea",633
+"korea",634
+"korea",635
+"korea",636
+"korea",637
+"korea",638
+"korea",639
+"korea",640
+"korea",641
+"korea",642
+"korea",644
+"korea",645
+"korea",646
+"korea",648
+"korea",649
+"korea",650
+"korea",651
+"korea",652
+"korea",654
+"korea",655
+"korea",656
+"korea",657
+"korea",658
+"korea",659
+"korea",660
+"korea",661
+"korea",662
+"korea",663
+"korea",664
+"korea",666
+"korea",667
+"korea",668
+"korea",669
+"korea",670
+"korea",671
+"korea",672
+"korea",673
+"korea",674
+"korea",675
+"korea",676
+"korea",677
+"korea",678
+"korea",679
+"korea",680
+"korea",681
+"korea",682
+"korea",683
+"korea",684
+"korea",685
+"korea",686
+"korea",687
+"korea",688
+"korea",689
+"korea",690
+"korea",692
+"korea",693
+"korea",694
+"korea",695
+"korea",696
+"korea",697
+"korea",698
+"korea",699
+"korea",700
+"korea",701
+"korea",702
+"korea",703
+"korea",704
+"korea",705
+"korea",706
+"korea",707
+"korea",708
+"korea",709
+"korea",711
+"korea election",1
+"korea election",28
+"korea election",41
+"korea election",47
+"korea election",49
+"korea election",51
+"korea election",54
+"korea election",60
+"korea election",63
+"korea election",66
+"korea election",68
+"korea election",73
+"korea election",74
+"korea election",78
+"korea election",80
+"korea election",84
+"korea election",85
+"korea election",88
+"korea election",105
+"korea election",110
+"korea election",126
+"korea election",143
+"korea election",148
+"korea election",150
+"korea election",153
+"korea election",154
+"korea election",157
+"korea election",158
+"korea election",159
+"korea election",162
+"korea election",163
+"korea election",164
+"korea election",165
+"korea election",166
+"korea election",167
+"korea election",169
+"korea election",170
+"korea election",171
+"korea election",172
+"korea election",173
+"korea election",174
+"korea election",175
+"korea election",177
+"korea election",179
+"korea election",180
+"korea election",181
+"korea election",182
+"korea election",184
+"korea election",185
+"korea election",186
+"korea election",215
+"korea election",218
+"korea election",219
+"korea election",276
+"korea election",288
+"korea election",290
+"korea election",291
+"korea election",292
+"korea election",302
+"korea election",303
+"korea election",367
+"korea election",421
+"korea election",422
+"korea election",423
+"korea election",425
+"korea election",431
+"korea election",435
+"korea election",439
+"korea election",446
+"korea election",452
+"korea election",456
+"korea election",458
+"korea election",460
+"korea election",461
+"korea election",462
+"korea election",464
+"korea election",469
+"korea election",470
+"korea election",471
+"korea election",474
+"korea election",477
+"korea election",478
+"korea election",479
+"korea election",480
+"korea election",481
+"korea election",482
+"korea election",484
+"korea election",488
+"korea election",501
+"korea election",537
+"korea election",540
+"korea election",545
+"korea election",552
+"korea election",563
+"korea election",564
+"korea election",579
+"korea election",582
+"korea election",586
+"korea election",591
+"korea election",593
+"korea election",597
+"korea election",601
+"korea election",608
+"korea election",615
+"korea election",618
+"korea election",632
+"korea election",635
+"korea election",648
+"korea election",652
+"korea election",657
+"korea election",660
+"korea election",664
+"korea election",672
+"korea election",683
+"korea election",687
+"korea election",697
+"parties",47
+"parties",74
+"parties",80
+"parties",84
+"parties",276
+"parties",344
+"parties",367
+"parties",433
+"parties",633
+"parties",670
+"president",1
+"president",6
+"president",8
+"president",9
+"president",10
+"president",18
+"president",20
+"president",21
+"president",22
+"president",24
+"president",27
+"president",28
+"president",29
+"president",32
+"president",34
+"president",37
+"president",42
+"president",46
+"president",47
+"president",49
+"president",50
+"president",51
+"president",58
+"president",60
+"president",63
+"president",66
+"president",68
+"president",73
+"president",74
+"president",78
+"president",80
+"president",81
+"president",84
+"president",85
+"president",88
+"president",93
+"president",95
+"president",96
+"president",97
+"president",104
+"president",105
+"president",110
+"president",119
+"president",126
+"president",137
+"president",143
+"president",148
+"president",151
+"president",153
+"president",154
+"president",156
+"president",159
+"president",160
+"president",178
+"president",179
+"president",180
+"president",181
+"president",182
+"president",183
+"president",184
+"president",185
+"president",198
+"president",200
+"president",204
+"president",206
+"president",210
+"president",215
+"president",218
+"president",219
+"president",220
+"president",241
+"president",244
+"president",259
+"president",272
+"president",276
+"president",285
+"president",287
+"president",289
+"president",290
+"president",294
+"president",302
+"president",303
+"president",315
+"president",338
+"president",340
+"president",342
+"president",345
+"president",349
+"president",367
+"president",421
+"president",422
+"president",423
+"president",431
+"president",433
+"president",445
+"president",446
+"president",452
+"president",455
+"president",456
+"president",458
+"president",460
+"president",461
+"president",462
+"president",469
+"president",470
+"president",471
+"president",473
+"president",474
+"president",475
+"president",476
+"president",477
+"president",478
+"president",479
+"president",480
+"president",481
+"president",482
+"president",484
+"president",485
+"president",486
+"president",488
+"president",496
+"president",498
+"president",499
+"president",506
+"president",514
+"president",515
+"president",536
+"president",537
+"president",540
+"president",545
+"president",552
+"president",563
+"president",564
+"president",565
+"president",573
+"president",577
+"president",579
+"president",582
+"president",586
+"president",590
+"president",591
+"president",593
+"president",601
+"president",611
+"president",612
+"president",617
+"president",633
+"president",635
+"president",639
+"president",640
+"president",646
+"president",648
+"president",652
+"president",657
+"president",660
+"president",661
+"president",663
+"president",672
+"president",679
+"president",683
+"president",687
+"president",692
+"president",693
+"president",697
+"president",699
+"president",704
+"president",706
+"president",708
+"president parties",47
+"president parties",74
+"president parties",80
+"president parties",84
+"president parties",276
+"president parties",367
+"president parties",433
+"president parties",633
