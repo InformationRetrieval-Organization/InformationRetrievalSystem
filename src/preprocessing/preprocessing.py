@@ -34,10 +34,7 @@ async def preprocess_documents() -> list[str]:
         
         # Remove numerical values
         content = re.sub(r'\d+', '', content)
-                
-        # Remove emojis, flags, and other symbols
-        content = content.encode('ascii', 'ignore').decode('ascii')
-        
+                        
         # Remove posts with a low english word ratio
         threshold = 0.7
         if not is_english(content, threshold, english_words):
@@ -73,9 +70,8 @@ async def preprocess_documents() -> list[str]:
     
     # Find tokens that occur only once
     unique_tokens = [key for key, value in term_freq_map.items() if value == 1]
-    
-    # Print the unique tokens
-    print(unique_tokens)
+        
+    list_of_tokens = [token for token in list_of_tokens if token not in unique_tokens]
     
     # Create DB entries
     await create_many_processed_posts(processed_posts)
