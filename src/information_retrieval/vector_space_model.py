@@ -49,7 +49,6 @@ async def search_vector_space(query: List[str]) -> List[int]:
     # Extract the sorted document IDs into a list
     # In this contex "_" is a placeholder, we are not interested in it so we use this convention
     sorted_doc_ids = [doc_id for doc_id, _ in sorted_docs]
-    print(information_retrieval.globals._inverted_index)
     return sorted_doc_ids
 
 async def build_vector_space_model():
