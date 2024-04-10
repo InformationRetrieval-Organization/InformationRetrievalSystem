@@ -1,8 +1,9 @@
 import requests
 import json
-from datetime import datetime
+from datetime import datetime, timezone
 import matplotlib.pyplot as plt
 import pandas as pd
+from datetime import datetime, timedelta
 
 base_url = "http://127.0.0.1:5000"
 boolean_api_url = f"{base_url}/search/boolean"
@@ -14,6 +15,8 @@ queries = ["korea", "election", "korea election", "president", "parties"]
 def calculate_recall_precision(relevant_docs, retrieved_docs):
     """
     Calculate recall and precision
+    TODO: mark the relevant documents in the retrieved documents manually
+    https://github.com/InformationRetrieval-Organization/InformationRetrievalSystem/issues/8
     """
     relevant_retrieved_docs = set(relevant_docs).intersection(set(retrieved_docs))
 
@@ -57,13 +60,26 @@ def calculate_temporal_relevance(retrieved_docs):
     if not retrieved_docs:
         return None
 
-    current_year = datetime.now().year
-    publication_years = [
-        int(doc["published_on"].split("-")[0]) for doc in retrieved_docs
-    ]
-    average_publication_year = sum(publication_years) / len(publication_years)
+    current_date = datetime.now()
 
-    return current_year - average_publication_year
+    # get all publication dates
+    publication_dates = [
+        datetime.strptime(doc["published_on"], "%Y-%m-%d %H:%M:%S%z")
+        for doc in retrieved_docs
+    ]
+
+    # calculate average publication date
+    average_publication_date = sum(
+        (
+            pub_date - datetime(1970, 1, 1, tzinfo=timezone.utc)
+            for pub_date in publication_dates
+        ),
+        timedelta(0),
+    ) / len(publication_dates)
+
+    difference_in_days = (current_date - average_publication_date).day
+
+    return difference_in_days
 
 
 if __name__ == "__main__":
