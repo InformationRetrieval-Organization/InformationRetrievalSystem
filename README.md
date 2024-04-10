@@ -1,5 +1,11 @@
 # InformationRetrievalEvaluation
 
+## documents
+
+[preparation sheet](https://docs.google.com/document/d/1CyZr6BCO7HAJkWeOlmOVO5_PjgciXi6qZNcJ2JwUiyE/edit?usp=sharing)
+
+[evaluation sheet](https://docs.google.com/document/d/1RlGlw1xzIZ5iDCYKw6M5eYVcVZCS67_rZi2n-odH48c/edit?usp=sharing)
+
 ## python
 
 ### unix/mac
