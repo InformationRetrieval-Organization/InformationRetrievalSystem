@@ -160,6 +160,11 @@ if __name__ == "__main__":
     print(df)
     print(df.describe())
 
-    df.set_index("query").plot(kind="bar", subplots=True, layout=(2, 4), legend=False)
+    axes = df.set_index("query").plot(kind="bar", subplots=True, layout=(2, 4), legend=False)
+
+    # Loop over the axes and remove the x-label
+    for ax in axes.flatten():
+        ax.set_xlabel("")
+
     plt.tight_layout()
     plt.show()
