@@ -68,7 +68,7 @@ async def create_one_post(
 
 async def delete_all_posts() -> None:
     """
-    Delete all posts from the database
+    Delete all posts from the database and reset the auto-increment counter
     """
     print("Deleting all posts")
 
@@ -77,6 +77,9 @@ async def delete_all_posts() -> None:
         await client.connect()
 
         await client.post.delete_many()
+
+        # Truncate the table and reset the ID sequence
+        await client.execute_raw('TRUNCATE TABLE "Post" RESTART IDENTITY')
     except Exception as e:
         print(f"An error occurred while deleting posts: {e}")
     finally:

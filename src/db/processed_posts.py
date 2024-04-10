@@ -55,7 +55,7 @@ async def create_many_processed_posts(
 
 async def delete_all_processed_posts() -> None:
     """
-    Delete all processed_posts from the database
+    Delete all processed_posts from the database and reset the auto-increment counter
     """
     print("Deleting all processed_posts")
 
@@ -64,6 +64,9 @@ async def delete_all_processed_posts() -> None:
         await client.connect()
 
         await client.processed_post.delete_many()
+
+        # Truncate the table and reset the ID sequence
+        await client.execute_raw('TRUNCATE TABLE "Processed_Post" RESTART IDENTITY')
     except Exception as e:
         print(f"An error occurred while deleting processed_posts: {e}")
     finally:
