@@ -33,7 +33,7 @@ async def preprocess_documents() -> list[str]:
         content = re.sub('[!\"#$%&\'()*+,-./:;<=>—?@[\]^_`{|}~0-9\n’“”]', '', post[1].lower())
         
         # Remove posts with non ascii characters
-        if not is_english(post[1]):
+        if not is_english(content):
             continue
         
         # Remove numerical values
@@ -74,5 +74,5 @@ async def preprocess_documents() -> list[str]:
     return list_of_tokens
 
 def is_english(s):
-    return s.ascii()
+    return s.isascii()
 
