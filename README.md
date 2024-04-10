@@ -20,7 +20,7 @@ pip install --upgrade pip
 
 ## environment variables
 * copy and rename the `.env.sample` file to `.env`
-* add your `NYT_API_KEY` API key
+* when you want to crawl data, you have to set the API keys
 
 ## database 
 
@@ -29,7 +29,7 @@ docker compose -f docker.compose.yml up -d
 prisma db push
 ```
 
-### pgadmin
+### optional: pgadmin
 Open `http://localhost:5050/`
 1) Email: root@root.com
 2) Password: root
