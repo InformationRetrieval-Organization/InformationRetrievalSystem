@@ -12,6 +12,9 @@ queries = ["korea", "election", "korea election", "president", "parties"]
 
 
 def calculate_recall_precision(relevant_docs, retrieved_docs):
+    """
+    Calculate recall and precision
+    """
     relevant_retrieved_docs = set(relevant_docs).intersection(set(retrieved_docs))
 
     recall = len(relevant_retrieved_docs) / len(relevant_docs) if relevant_docs else 0
@@ -23,6 +26,9 @@ def calculate_recall_precision(relevant_docs, retrieved_docs):
 
 
 def call_boolean_api(query):
+    """
+    Call Boolean API
+    """
     url = f"{boolean_api_url}"
     body = [{"operator": "AND", "value": word} for word in query.split()]
     headers = {"Content-Type": "application/json"}
@@ -33,6 +39,9 @@ def call_boolean_api(query):
 
 
 def call_vector_space_api(query):
+    """
+    Call Vector Space API
+    """
     query_string = "+".join(query.split())
     url = f"{vector_space_url}?q={query_string}"
     response = requests.get(url)
@@ -42,6 +51,9 @@ def call_vector_space_api(query):
 
 
 def calculate_temporal_relevance(retrieved_docs):
+    """
+    Calculate temporal relevance
+    """
     if not retrieved_docs:
         return None
 
@@ -55,6 +67,9 @@ def calculate_temporal_relevance(retrieved_docs):
 
 
 if __name__ == "__main__":
+    """
+    Evaluate Boolean and Vector Space Models
+    """
     print("Evaluating Boolean and Vector Space Models")
     print("===========================================")
 
