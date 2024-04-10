@@ -27,7 +27,10 @@ async def search_post():
     
     posts = await get_all_posts()
     filtered_posts = [post for post in posts if post.id in id_list]
-        
+    
+    # Sort posts based on time
+    filtered_posts.sort(key=lambda x: x.published_on, reverse=True)
+    
     object_schema = ObjectSchema()
     json_string = object_schema.dumps(filtered_posts, many=True)
     
