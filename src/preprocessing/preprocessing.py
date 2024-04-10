@@ -14,8 +14,8 @@ async def preprocess_documents() -> list[str]:
     """
     list_of_tokens = []
     processed_posts = []
-    total_string = ""
-    
+    term_freq_map = {}
+        
     # Get the posts from the database
     posts = await get_all_posts()
     posts = [(post.id, post.content) for post in posts]
@@ -34,6 +34,9 @@ async def preprocess_documents() -> list[str]:
         
         # Remove numerical values
         content = re.sub(r'\d+', '', content)
+                
+        # Remove emojis, flags, and other symbols
+        content = content.encode('ascii', 'ignore').decode('ascii')
         
         # Remove posts with a low english word ratio
         threshold = 0.7
@@ -60,14 +63,24 @@ async def preprocess_documents() -> list[str]:
             "content": ' '.join(tokens)
         })
         
+        for token in tokens:
+            if token in term_freq_map:
+                term_freq_map[token] += 1
+            else:
+                term_freq_map[token] = 1
+        
         list_of_tokens.extend(tokens)
+    
+    # Find tokens that occur only once
+    unique_tokens = [key for key, value in term_freq_map.items() if value == 1]
+    
+    # Print the unique tokens
+    print(unique_tokens)
     
     # Create DB entries
     await create_many_processed_posts(processed_posts)
 
     list_of_tokens = list(set(list_of_tokens))
-    test_list = sorted(list_of_tokens)    
-    print(test_list)
     information_retrieval.globals._vocabulary = list_of_tokens
     
     print("Length of Vocabulary: " + str(len(list_of_tokens)))
@@ -78,10 +91,9 @@ def is_english(content, threshold, english_words):
     english_words_count = sum(1 for word in content.split() if word in english_words)
     total_words_count = len(content.split())
     
-    print(english_words_count, total_words_count, english_words_count / total_words_count)
-    
-    if english_words_count / total_words_count >= threshold:
-        return True
-    else:
+    if total_words_count == 0 or english_words_count == 0: # Avoid division by zero
         return False
+    
+    return english_words_count / total_words_count >= threshold
+    
 
