@@ -1,19 +1,20 @@
-import json
-from flask import Blueprint, request, jsonify, Response
+from flask import Blueprint, request
 import nltk
 from information_retrieval.boolean_model import search_boolean_model
 from db.posts import get_all_posts
-from marshmallow import Schema, fields
+from api.schemas import ObjectSchema
 from flask_cors import CORS
 
 boolean_search_blueprint = Blueprint('boolean_search', __name__)
 
 CORS(boolean_search_blueprint)
 
-# Boolean Model endpoint
-# http://127.0.0.1:5000/search/boolean
 @boolean_search_blueprint.route('/search/boolean', methods=['POST'])
 async def search_post():
+    """
+    Search the Boolean Model for the given query.
+    url: http://127.0.0.1:5000/search/boolean
+    """
     json_request = request.get_json()
     
     operator_value_list = []
@@ -35,12 +36,5 @@ async def search_post():
     json_string = object_schema.dumps(filtered_posts, many=True)
     
     return json_string
-    
-class ObjectSchema(Schema):
-    id = fields.Str()
-    title = fields.Str()
-    content = fields.Str()
-    published_on = fields.Str()
-    link = fields.Str()
-    source = fields.Str()
+
 

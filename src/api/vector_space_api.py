@@ -1,15 +1,17 @@
 from flask import Blueprint, request
 from information_retrieval.vector_space_model import search_vector_space
 import nltk
-from marshmallow import Schema, fields
+from api.schemas import ObjectSchema
 from db.posts import get_all_posts
 
 vector_space_search_blueprint = Blueprint('vector_space_search', __name__)
 
-# Vector Space Model endpoint
-# http://127.0.0.1:5000/search/vector-space?q=your_search_term
 @vector_space_search_blueprint.route('/search/vector-space', methods=['GET'])
 async def search_vector_space_model():
+    """
+    Search the Vector Space Model for the given query.
+    url: http://127.0.0.1:5000/search/vector-space?q=your_search_term
+    """
     query = request.args.get('q')
     
     lemmatizer = nltk.stem.WordNetLemmatizer()
@@ -29,11 +31,3 @@ async def search_vector_space_model():
     json_string = object_schema.dumps(filtered_posts, many=True)
     
     return json_string
-
-class ObjectSchema(Schema):
-    id = fields.Str()
-    title = fields.Str()
-    content = fields.Str()
-    published_on = fields.Str()
-    link = fields.Str()
-    source = fields.Str()
