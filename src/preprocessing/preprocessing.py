@@ -25,23 +25,22 @@ async def preprocess_documents() -> list[str]:
     nltk.download('wordnet')
     nltk.download('stopwords')
     nltk.download('words')
-    
-    for post in posts:
-        total_string += post[1].lower()
-        
+    english_words = set(nltk.corpus.words.words())
+    english_words.add('korea')
+
+    for post in posts:        
         # Remove special characters and convert to lowercase
-        content = re.sub('[!\"#$%&\'()*+,-./:;<=>—?@[\]^_`{|}~0-9\n’“”]', '', post[1].lower())
-        
-        # Remove posts with non ascii characters
-        if not is_english(content):
-            continue
+        content = re.sub('[–!\"#$%&\'()*+,-./:;<=‘>—?@[\]^_`�{|}~0-9\n’“”]', '', post[1].lower())
         
         # Remove numerical values
         content = re.sub(r'\d+', '', content)
+        
+        # Remove posts with a low english word ratio
+        threshold = 0.7
+        if not is_english(content, threshold, english_words):
+            continue
     
         # Remove non-english words
-        english_words = set(nltk.corpus.words.words())
-        english_words.add('korea')
         content = " ".join(w for w in nltk.wordpunct_tokenize(content) if w.lower() in english_words or not w.isalpha())
         
         # Tokenize the document
@@ -67,12 +66,22 @@ async def preprocess_documents() -> list[str]:
     await create_many_processed_posts(processed_posts)
 
     list_of_tokens = list(set(list_of_tokens))
+    test_list = sorted(list_of_tokens)    
+    print(test_list)
     information_retrieval.globals._vocabulary = list_of_tokens
     
     print("Length of Vocabulary: " + str(len(list_of_tokens)))
     
     return list_of_tokens
 
-def is_english(s):
-    return s.isascii()
+def is_english(content, threshold, english_words):
+    english_words_count = sum(1 for word in content.split() if word in english_words)
+    total_words_count = len(content.split())
+    
+    print(english_words_count, total_words_count, english_words_count / total_words_count)
+    
+    if english_words_count / total_words_count >= threshold:
+        return True
+    else:
+        return False
 
