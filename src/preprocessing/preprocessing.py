@@ -32,6 +32,10 @@ async def preprocess_documents() -> list[str]:
         # Remove special characters and convert to lowercase
         content = re.sub('[!\"#$%&\'()*+,-./:;<=>—?@[\]^_`{|}~0-9\n’“”]', '', post[1].lower())
         
+        # Remove posts with non ascii characters
+        if not is_english(post[1]):
+            continue
+        
         # Remove numerical values
         content = re.sub(r'\d+', '', content)
     
@@ -68,4 +72,7 @@ async def preprocess_documents() -> list[str]:
     print("Length of Vocabulary: " + str(len(list_of_tokens)))
     
     return list_of_tokens
+
+def is_english(s):
+    return s.ascii()
 
