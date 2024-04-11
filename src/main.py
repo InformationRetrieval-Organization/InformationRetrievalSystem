@@ -27,7 +27,7 @@ async def main():
     await build_boolean_model()
     await build_vector_space_model()
 
-    app.run(debug=True)
+    app.run()
 
 if __name__ == "__main__":
     asyncio.run(main())
