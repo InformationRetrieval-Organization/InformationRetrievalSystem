@@ -20,6 +20,8 @@ async def main():
     """
     Main function to run the Flask app
     """
+    print("Flask app started.")
+
     await init_database()
 
     src.information_retrieval.globals.init()
@@ -27,7 +29,7 @@ async def main():
     await build_boolean_model()
     await build_vector_space_model()
 
-    app.run()
+    app.run(host="0.0.0.0", port=8000)
 
 # Run the main function when the script is imported
 asyncio.run(main())
