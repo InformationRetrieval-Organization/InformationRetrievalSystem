@@ -21,8 +21,9 @@ async def insert_posts():
     Insert articles from files into the database
     """
     print("Inserting articles from files into the database")
-    cwd = os.getcwd()
-    files_path = os.path.join(cwd, "files", "*.csv")
+
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    files_path = os.path.abspath(os.path.join(script_dir, "..", "..", "files", "*.csv"))
 
     # Get all CSV files in the directory
     csv_files = glob.glob(files_path)
@@ -56,3 +57,5 @@ async def insert_posts():
             )
 
         await create_many_posts(posts)
+        
+        print(f"Inserted {len(posts)} articles from {file_path}")
