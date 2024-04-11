@@ -29,7 +29,7 @@ async def main():
     await build_boolean_model()
     await build_vector_space_model()
 
-    app.run(host="0.0.0.0", port=8000)
+    app.run()
 
 # Run the main function when the script is imported
 asyncio.run(main())
