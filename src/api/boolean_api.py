@@ -1,8 +1,8 @@
 from flask import Blueprint, request
 import nltk
-from src.information_retrieval.boolean_model import search_boolean_model
-from src.db.posts import get_all_posts
-from src.api.schemas import ObjectSchema
+from information_retrieval.boolean_model import search_boolean_model
+from db.posts import get_all_posts
+from api.schemas import ObjectSchema
 from flask_cors import CORS
 
 boolean_search_blueprint = Blueprint('boolean_search', __name__)

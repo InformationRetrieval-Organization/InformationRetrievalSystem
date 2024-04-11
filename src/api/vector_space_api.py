@@ -1,8 +1,8 @@
 from flask import Blueprint, request
-from src.information_retrieval.vector_space_model import search_vector_space
+from information_retrieval.vector_space_model import search_vector_space
 import nltk
-from src.api.schemas import ObjectSchema
-from src.db.posts import get_all_posts
+from api.schemas import ObjectSchema
+from db.posts import get_all_posts
 
 vector_space_search_blueprint = Blueprint('vector_space_search', __name__)
 

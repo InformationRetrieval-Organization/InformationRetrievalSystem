@@ -3,9 +3,9 @@ import nltk
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from nltk.stem import PorterStemmer
-from src.db.processed_posts import create_one_processed_post, create_many_processed_posts
-from src.db.posts import get_all_posts
-import src.information_retrieval.globals 
+from db.processed_posts import create_one_processed_post, create_many_processed_posts
+from db.posts import get_all_posts
+import information_retrieval.globals 
 from nltk import FreqDist
 
 async def preprocess_documents() -> list[str]:
@@ -77,7 +77,7 @@ async def preprocess_documents() -> list[str]:
     await create_many_processed_posts(processed_posts)
 
     list_of_tokens = list(set(list_of_tokens))
-    src.information_retrieval.globals._vocabulary = list_of_tokens
+    information_retrieval.globals._vocabulary = list_of_tokens
     
     print("Length of Vocabulary: " + str(len(list_of_tokens)))
     

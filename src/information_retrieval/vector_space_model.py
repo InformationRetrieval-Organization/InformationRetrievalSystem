@@ -2,9 +2,9 @@
 # https://github.com/InformationRetrieval-Organization/InformationRetrievalSystem/issues/9
 import math
 from typing import List
-from src.db.processed_posts import get_all_processed_posts
-import src.information_retrieval.globals
-import src.information_retrieval.linked_list
+from db.processed_posts import get_all_processed_posts
+import information_retrieval.globals
+import information_retrieval.linked_list
 import numpy as np
 
 
@@ -22,8 +22,8 @@ async def search_vector_space(query: List[str]) -> List[int]:
     # Matrix dimension 1x1
     query_weight_matrix = []
 
-    for term in src.information_retrieval.globals._vocabulary:
-        df = src.information_retrieval.globals._inverted_index[term].length()
+    for term in information_retrieval.globals._vocabulary:
+        df = information_retrieval.globals._inverted_index[term].length()
         # Calculate the inverse document frequency (IDF) for each term
         inverse_document_frequency[term] = compute_inverse_document_frequency(total_documents, df)
  
@@ -33,7 +33,7 @@ async def search_vector_space(query: List[str]) -> List[int]:
     # Map each document by id to the corressponding cosine similiarity
     doc_cosine_similiarity_map = {}
 
-    for doc_id, vector in src.information_retrieval.globals._document_id_vector_map.items():
+    for doc_id, vector in information_retrieval.globals._document_id_vector_map.items():
         # Calculate the Cosine similiarity by using the numpy library
         # Calculating the dot product between the Queryvector and the Documentvector
         dot_product = np.dot(query_weight_matrix, vector)
@@ -55,7 +55,7 @@ async def build_vector_space_model():
     """
     Build the Vector Space Model
     """
-    vocabulary: List[str] = src.information_retrieval.globals._vocabulary
+    vocabulary: List[str] = information_retrieval.globals._vocabulary
     
     print("Building Vector Space Model")
         
@@ -68,7 +68,7 @@ async def build_vector_space_model():
 
     for term in vocabulary:
         # Calculate the df it is the length of the linked list of occurance documents for a particular term
-        df : int = src.information_retrieval.globals._inverted_index[term].length()
+        df : int = information_retrieval.globals._inverted_index[term].length()
         # Calculate the inverse document frequency (IDF) for each term
         inverse_document_frequency[term] = compute_inverse_document_frequency(total_documents, df)
 
@@ -76,8 +76,8 @@ async def build_vector_space_model():
         # Every post has its own vector these are created below and added in the corresponding maps
         tfidf_vector = [compute_tf_idf_weighting(compute_sublinear_tf_scaling(post[1].count(term)), inverse_document_frequency[term]) for term in vocabulary]
         # Matrix dimension is term x documents
-        src.information_retrieval.globals._term_document_weight_matrix.append(tfidf_vector)
-        src.information_retrieval.globals._document_id_vector_map[post[0]] = tfidf_vector 
+        information_retrieval.globals._term_document_weight_matrix.append(tfidf_vector)
+        information_retrieval.globals._document_id_vector_map[post[0]] = tfidf_vector 
 
     print("Vector Space Model Built")
     return None

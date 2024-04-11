@@ -2,7 +2,6 @@ prisma
 flask[async]
 flask-cors
 scikit-learn
-asyncio
 nltk
 bs4
 selenium
