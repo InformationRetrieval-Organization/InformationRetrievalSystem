@@ -1,4 +1,4 @@
-# InformationRetrievalEvaluation
+# Information Retrieval Evaluation
 
 ## documents
 
@@ -6,7 +6,12 @@
 
 [evaluation sheet](https://docs.google.com/document/d/1RlGlw1xzIZ5iDCYKw6M5eYVcVZCS67_rZi2n-odH48c/edit?usp=sharing)
 
-## python
+## requirements
+
+* Python >=3.7
+* Visual Studio Code
+
+## Python
 
 ### unix/mac
 ```bash
