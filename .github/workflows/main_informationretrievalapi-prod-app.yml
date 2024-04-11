@@ -76,7 +76,14 @@ jobs:
           app-name: 'informationretrievalapi-prod-app'
           slot-name: 'Production'
 
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v2
+        with:
+          node-version: '20'
+
+      - name: Install Prisma CLI
+        run: npm install -g prisma
+
       - name: Run Prisma Generate
-        run: |
-          prisma generate
+        run: prisma generate
           
