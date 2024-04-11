@@ -85,5 +85,5 @@ jobs:
         run: npm install -g prisma
 
       - name: Run Prisma Generate
-        run: prisma generate
+        run: prisma db push
           
