@@ -47,3 +47,9 @@ Connection tab requires to type:
 2) Port: 5432
 3) Username: postgres
 4) Password: postgres
+
+## production deployment
+
+```bash
+gunicorn -c gunicorn_config.py main:app
+```
