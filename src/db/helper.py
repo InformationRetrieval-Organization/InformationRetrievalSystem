@@ -1,6 +1,6 @@
 import pandas as pd
-from db.posts import create_many_posts, delete_all_posts
-from db.processed_posts import delete_all_processed_posts
+from src.db.posts import create_many_posts, delete_all_posts
+from src.db.processed_posts import delete_all_processed_posts
 import os
 from dateutil.parser import parse
 import glob

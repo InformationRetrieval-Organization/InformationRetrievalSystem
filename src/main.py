@@ -1,12 +1,12 @@
 import asyncio
 from flask import Flask
-from api.vector_space_api import vector_space_search_blueprint
-from api.boolean_api import boolean_search_blueprint
-from information_retrieval.vector_space_model import build_vector_space_model
-from information_retrieval.boolean_model import build_boolean_model
-from preprocessing.preprocessing import preprocess_documents
-from db.helper import init_database
-import information_retrieval.globals
+from src.api.vector_space_api import vector_space_search_blueprint
+from src.api.boolean_api import boolean_search_blueprint
+from src.information_retrieval.vector_space_model import build_vector_space_model
+from src.information_retrieval.boolean_model import build_boolean_model
+from src.preprocessing.preprocessing import preprocess_documents
+from src.db.helper import init_database
+import src.information_retrieval.globals
 from flask_cors import CORS
 
 app = Flask(__name__)
@@ -22,7 +22,7 @@ async def main():
     """
     await init_database()
 
-    information_retrieval.globals.init()
+    src.information_retrieval.globals.init()
     await preprocess_documents() 
     await build_boolean_model()
     await build_vector_space_model()
