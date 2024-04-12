@@ -42,8 +42,10 @@ async def search_vector_space(query: List[str]) -> List[int]:
         magnitude_entry = np.linalg.norm(vector)
         # Calculating the Cosine similiarity
         cosine_similarity = dot_product / (magnitude_query * magnitude_entry)
+        # multiply cosine similarity with the date coefficient
+        cosine_similarity *= information_retrieval.globals._date_coefficient[doc_id]
         # Adding the Results to the map created before
-        doc_cosine_similiarity_map[doc_id] = cosine_similarity
+        doc_cosine_similiarity_map[doc_id] = cosine_similarity 
     # Sort the map by the highest cosine similiarity, lambda takes the second index in the tuple and used these to sort
     sorted_docs = sorted(doc_cosine_similiarity_map.items(), key=lambda x: x[1], reverse=True)
     # Extract the sorted document IDs into a list

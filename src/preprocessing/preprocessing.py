@@ -7,18 +7,21 @@ from db.processed_posts import create_one_processed_post, create_many_processed_
 from db.posts import get_all_posts
 import information_retrieval.globals 
 from nltk import FreqDist
+from datetime import datetime
 
 async def preprocess_documents() -> list[str]:
     """
     Preprocesses the documents in the database and returns a list of tokens.
     """
+    # Initialize the variables
     list_of_tokens = []
     processed_posts = []
     term_freq_map = {}
+    MAX_COEFFICIENT = 2
         
     # Get the posts from the database
     posts = await get_all_posts()
-    posts = [(post.id, post.content) for post in posts]
+    posts = [(post.id, post.content, post.published_on) for post in posts]
     
     # Download the necessary resources
     nltk.download('punkt')
@@ -60,11 +63,10 @@ async def preprocess_documents() -> list[str]:
             "content": ' '.join(tokens)
         })
         
-        for token in tokens:
-            if token in term_freq_map:
-                term_freq_map[token] += 1
-            else:
-                term_freq_map[token] = 1
+        # Calculate the date coefficient
+        information_retrieval.globals._date_coefficient[post[0]] = calculate_date_coefficient(post[2], MAX_COEFFICIENT)
+        
+        set_term_freq_map(term_freq_map, tokens)
         
         list_of_tokens.extend(tokens)
     
@@ -83,7 +85,20 @@ async def preprocess_documents() -> list[str]:
     
     return list_of_tokens
 
-def is_english(content, threshold, english_words):
+def set_term_freq_map(term_freq_map: dict, tokens: list) -> None:
+    """
+    Set the term frequency map for a document.
+    """
+    for token in tokens:
+        if token in term_freq_map:
+            term_freq_map[token] += 1
+        else:
+            term_freq_map[token] = 1
+
+def is_english(content: str, threshold: float, english_words: set) -> bool:
+    """
+    Determine if a document is in English based on the ratio of English words.
+    """
     english_words_count = sum(1 for word in content.split() if word in english_words)
     total_words_count = len(content.split())
     
@@ -91,5 +106,14 @@ def is_english(content, threshold, english_words):
         return False
     
     return english_words_count / total_words_count >= threshold
-    
 
+def calculate_date_coefficient(post_date: datetime, max_coefficient: int) -> int:
+    """
+    Calculate the date coefficient for a document.
+    """
+    oldest_date = datetime(2024, 3, 12)
+    newest_date = datetime(2024, 4, 12)
+    days_between = (newest_date - oldest_date).days
+    coefficient_per_day = max_coefficient / days_between
+    
+    information_retrieval.globals._date_coefficient[post_date] = max_coefficient - (newest_date - post_date).days * coefficient_per_day
