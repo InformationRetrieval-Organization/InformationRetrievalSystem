@@ -81,6 +81,9 @@ def _not_processing(word, id_set):
     return id_set
 
 def create_csv():
+    if os.environ.get("PYTHON_ENV") != "development": # only create the csv file in development mode
+        return
+    
     data = []
     for key, values in information_retrieval.globals._inverted_index.items():
         for value in values:
