@@ -74,9 +74,7 @@ async def preprocess_documents() -> list[str]:
     unique_tokens = [key for key, value in term_freq_map.items() if value == 1]
         
     list_of_tokens = [token for token in list_of_tokens if token not in unique_tokens]
-    
-    print(information_retrieval.globals._date_coefficient)
-        
+            
     # Create DB entries
     await create_many_processed_posts(processed_posts)
 
