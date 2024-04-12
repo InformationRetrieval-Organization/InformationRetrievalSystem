@@ -75,6 +75,8 @@ async def preprocess_documents() -> list[str]:
         
     list_of_tokens = [token for token in list_of_tokens if token not in unique_tokens]
     
+    print(information_retrieval.globals._date_coefficient)
+        
     # Create DB entries
     await create_many_processed_posts(processed_posts)
 
@@ -114,6 +116,9 @@ def calculate_date_coefficient(post_date: datetime, max_coefficient: int) -> int
     oldest_date = datetime(2024, 3, 12)
     newest_date = datetime(2024, 4, 12)
     days_between = (newest_date - oldest_date).days
-    coefficient_per_day = max_coefficient / days_between
+    coefficient_per_day = (max_coefficient - 1) / days_between
     
-    information_retrieval.globals._date_coefficient[post_date] = max_coefficient - (newest_date - post_date).days * coefficient_per_day
+    post_date = post_date.replace(tzinfo=None) # Remove timezone info, otherwise the subtraction will fail
+    
+    days_since_oldest = (post_date - oldest_date).days
+    return coefficient_per_day * days_since_oldest + 1
