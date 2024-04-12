@@ -16,9 +16,7 @@ const SearchComponent = ({ searchType }: { searchType: string }) => {
             let url = '';
             let data = null;
 
-            console.log("searchType: ", searchType);
-
-            if (searchType === 'vector-space') {  
+            if (searchType === 'vector-space') {
                 url = `/search/${searchType}?q=${inputValue.replace(/\s/g, '+')}`;
                 data = await getVectorSpaceArticles(url);
             } else if (searchType === 'boolean') {

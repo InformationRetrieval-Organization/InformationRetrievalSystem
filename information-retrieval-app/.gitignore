@@ -25,9 +25,7 @@ yarn-debug.log*
 yarn-error.log*
 
 # local env files
-# Environments
 .env
-.env*.local
 
 # vercel
 .vercel

@@ -1,7 +1,5 @@
 # Web User Interface for the Information Retrieval System
 
-This is a template for creating applications using Next.js 13 (app directory) and NextUI (v2).
-
 ## Technologies Used
 
 - [Next.js 13](https://nextjs.org/docs/getting-started)
@@ -16,7 +14,6 @@ This is a template for creating applications using Next.js 13 (app directory) an
 
 ### environment variables
 * copy and rename the `.env.sample` file to `.env`
-* add your `NYT_API_KEY` API key
 
 ### Install dependencies
 

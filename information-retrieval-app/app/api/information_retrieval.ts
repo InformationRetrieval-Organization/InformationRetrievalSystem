@@ -1,8 +1,6 @@
 const baseUrl = process.env.IR_API_URL;
 
-export async function getVectorSpaceArticles(url: string): Promise<ArticleResult[]> {
-    console.log("variable: ", baseUrl);
-  
+export async function getVectorSpaceArticles(url: string): Promise<ArticleResult[]> {  
     const response = await fetch(`${baseUrl}${url}`);
 
     const data = await response.json();
