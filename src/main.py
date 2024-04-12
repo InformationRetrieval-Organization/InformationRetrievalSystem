@@ -8,7 +8,7 @@ from preprocessing.preprocessing import preprocess_documents
 from db.helper import init_database
 import information_retrieval.globals
 from flask_cors import CORS
-import os
+from config import FLASK_ENV
 
 app = Flask(__name__)
 app.register_blueprint(vector_space_search_blueprint)
@@ -30,7 +30,7 @@ async def main():
     await build_boolean_model()
     await build_vector_space_model()
 
-    if os.getenv('FLASK_ENV') == 'development':
+    if FLASK_ENV == 'development':
         app.run()
 
 # Run the main function when the script is imported

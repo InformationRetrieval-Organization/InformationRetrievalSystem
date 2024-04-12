@@ -27,3 +27,6 @@ GROUND_DATASET_START_DATE = datetime.combine(
 GROUND_DATASET_END_DATE = datetime.combine(
     datetime.strptime(os.getenv("GROUND_DATASET_END_DATE"), "%Y-%m-%d").date(), time.max
 )
+
+# Flask Environment
+FLASK_ENV = os.getenv("FLASK_ENV")
