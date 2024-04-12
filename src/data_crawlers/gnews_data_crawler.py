@@ -5,7 +5,10 @@ import time
 from helper import *
 
 
-def get_gnews_data(api_key, begin_date, end_date, page):
+def get_gnews_data(api_key: str, begin_date: date, end_date: date, page: int = 1):
+    """
+    Get news articles from GNews API.
+    """
     url = "https://gnews.io/api/v4/search"
     params = {
         "apikey": api_key,
@@ -25,6 +28,9 @@ def get_gnews_data(api_key, begin_date, end_date, page):
         return None
 
 def crawl_gnews_data() -> None:
+    """
+    Crawl news articles from GNews API and save them to a CSV file.
+    """
     gnews_api_key = get_gnews_api_key()
     begin_date = get_crawl_start_date()
     end_date = get_crawl_end_date()

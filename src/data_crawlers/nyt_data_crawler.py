@@ -1,3 +1,4 @@
+# NOTE: not used in the final project, but kept for reference
 import os
 from datetime import date, datetime
 import requests
@@ -14,6 +15,9 @@ from helper import *
 
 
 async def crawl_nyt_data() -> None:
+    """
+    Crawl news articles from New York Times and save them to a CSV file.
+    """
     nyt_api_key = get_nyt_api_key()
     begin_date = get_crawl_start_date()
     end_date = get_crawl_end_date()
@@ -32,10 +36,10 @@ async def crawl_nyt_data() -> None:
     page = 1
     total_articles = 0
     while True:
-        articles = get_articles(query="korea",
+        articles = get_articles(api_key=nyt_api_key, 
                                 begin_date=begin_date, 
                                 end_date=end_date, 
-                                api_key=nyt_api_key, 
+                                query="korea",
                                 page=page)
         if not articles:
             break
@@ -62,7 +66,10 @@ async def crawl_nyt_data() -> None:
     driver.quit()
 
 
-def get_articles(query, begin_date, end_date, api_key, page=1):
+def get_articles(api_key: date, begin_date: date, end_date: date, query: str, page: int = 1):
+    """
+    Get news articles from New York Times API.
+    """
     url = "https://api.nytimes.com/svc/search/v2/articlesearch.json"
     params = {
         "q": query,
@@ -81,6 +88,9 @@ def get_articles(query, begin_date, end_date, api_key, page=1):
         return None
 
 def get_full_article(url, driver):
+    """
+    Get the full text of a news article from New York Times.
+    """
     # Use the provided webdriver to access the logged-in session
     driver.get(url)
       
@@ -104,6 +114,9 @@ def get_full_article(url, driver):
         return None
 
 def login_nyt():
+    """
+    Log in to New York Times and return the webdriver.
+    """
     chrome_options = Options()
 
     driver = webdriver.Chrome(options=chrome_options)

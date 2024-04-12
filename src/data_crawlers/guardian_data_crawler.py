@@ -7,10 +7,13 @@ from bs4 import BeautifulSoup
 from helper import *
 
 
-def get_guardian_data(guardian_api_key, begin_date, end_date, page=1):
+def get_guardian_data(api_key: str, begin_date: date, end_date: date, page: int = 1):
+    """
+    Get news articles from The Guardian API.
+    """
     url = "https://content.guardianapis.com/search"
     params = {
-        "api-key": guardian_api_key,
+        "api-key": api_key,
         "from-date": begin_date.strftime("%Y-%m-%d"),
         "to-date": end_date.strftime("%Y-%m-%d"),
         "order-by": "newest",
@@ -20,6 +23,9 @@ def get_guardian_data(guardian_api_key, begin_date, end_date, page=1):
     return requests.get(url, params=params)
 
 def get_full_article(url):
+    """
+    Get the full text of a news article from The Guardian.
+    """
     response = requests.get(url)
     if response.status_code != 200:
         print(f"Failed to get page: {url}")
@@ -31,6 +37,9 @@ def get_full_article(url):
     return ' '.join([p.get_text() for p in article_body.find_all('p')]) if article_body else None
 
 async def crawl_guardian_data() -> None:
+    """
+    Crawl news articles from The Guardian API and save them to a CSV file.
+    """
     guardian_api_key = get_guardian_api_key()
     begin_date = get_crawl_start_date()
     end_date = get_crawl_end_date()
