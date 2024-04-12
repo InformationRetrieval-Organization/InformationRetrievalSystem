@@ -6,6 +6,7 @@ import information_retrieval.globals
 import pandas as pd
 import os
 from config import INVERTED_INDEX_FILE_PATH
+from config import FLASK_ENV
 
 async def build_boolean_model():
     """
@@ -81,7 +82,7 @@ def _not_processing(word, id_set):
     return id_set
 
 def create_csv():
-    if os.environ.get("PYTHON_ENV") != "development": # only create the csv file in development mode
+    if FLASK_ENV != "development": # only create the csv file in development mode
         return
     
     data = []
