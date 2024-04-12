@@ -1,10 +1,23 @@
+from typing import List
+from matplotlib.ticker import MaxNLocator
 import requests
 import json
 from datetime import datetime, timezone
 import matplotlib.pyplot as plt
 import pandas as pd
 from datetime import datetime, timedelta
+from datetime import datetime, timedelta
+from prisma import models
 import os
+import sys
+
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
+
+from config import (
+    GROUND_DATASET_START_DATE,
+    GROUND_DATASET_END_DATE,
+    GROUND_DATASET_FILE_PATH,
+)
 
 base_url = "http://127.0.0.1:5000"
 boolean_api_url = f"{base_url}/search/boolean"
@@ -12,12 +25,26 @@ vector_space_url = f"{base_url}/search/vector-space"
 
 # TODO: mark the relevant documents for each query manually
 # https://github.com/InformationRetrieval-Organization/InformationRetrievalSystem/issues/8
-queries = ['korea', 'election', 'korea election', 'president', 'parties', 'president parties']
+queries = [
+    "korea",
+    "election",
+    "korea election",
+    "president",
+    "parties",
+    "president parties",
+]
 
 
-def evaluate_search_model(relevant_docs, retrieved_docs):
+def evaluate_search_model(relevant_docs: List[int], retrieved_docs: List[int]) -> tuple:
     """
-    Calculate recall, precision, and F1 score
+    Calculate recall, precision, and F1 score.
+
+    Args:
+        relevant_docs (List): List of relevant documents
+        retrieved_docs (List): List of retrieved documents
+
+    Returns:
+        tuple: recall, precision, and F1 score
     """
     relevant_retrieved_docs = set(relevant_docs).intersection(set(retrieved_docs))
 
@@ -36,9 +63,10 @@ def evaluate_search_model(relevant_docs, retrieved_docs):
     return recall, precision, f1
 
 
-def call_boolean_api(query):
+def call_boolean_api(query: str) -> List[models.Post]:
     """
     Call Boolean API
+    TODO: whats with OR and NOT operators?
     """
     url = f"{boolean_api_url}"
     body = [{"operator": "AND", "value": word} for word in query.split()]
@@ -49,7 +77,7 @@ def call_boolean_api(query):
     return response.json()
 
 
-def call_vector_space_api(query):
+def call_vector_space_api(query: str) -> List[models.Post]:
     """
     Call Vector Space API
     """
@@ -61,44 +89,135 @@ def call_vector_space_api(query):
     return response.json()
 
 
-def calculate_temporal_relevance(retrieved_docs):
+def calculate_temporal_relevance(
+    retrieved_docs: List[models.Post], start_date: datetime, end_date: datetime
+) -> dict:
     """
-    Calculate temporal relevance
+    Calculate temporal relevance.
+    Temporal relevance is the number of documents retrieved for each day in the specified date range.
+
+    Args:
+        retrieved_docs (List): List of retrieved documents
+        start_date (str): Start date in the format 'YYYY-MM-DD'
+        end_date (str): End date in the format 'YYYY-MM-DD'
+
+    Returns:
+        dict: Number of documents retrieved for each day (date + count)
     """
-    if not retrieved_docs:
-        return None
 
-    current_date = datetime.now()
+    # dict with 1 day intervall in the daterange from start_date to end_date
+    date_counts = {
+        str(start_date + timedelta(days=i)): 0
+        for i in range((end_date - start_date).days + 1)
+    }
 
-    # get all publication dates
-    publication_dates = [
-        datetime.strptime(doc["published_on"], "%Y-%m-%d %H:%M:%S%z")
-        for doc in retrieved_docs
-    ]
+    for doc in retrieved_docs:
+        date_time_str = doc["published_on"]
 
-    # calculate average publication date
-    average_publication_date = sum(
-        (
-            pub_date - datetime(1970, 1, 1, tzinfo=timezone.utc)
-            for pub_date in publication_dates
-        ),
-        timedelta(0),
-    ) / len(publication_dates)
+        # convert to datetime object and reset time
+        date_time_obj = datetime.strptime(date_time_str, "%Y-%m-%d %H:%M:%S%z")
+        date = date_time_obj.replace(second=0, minute=0, hour=0)
+        date = date.strftime("%Y-%m-%d %H:%M:%S")
 
-    difference_in_days = (current_date - average_publication_date).day
+        if date in date_counts:
+            date_counts[date] += 1
 
-    return difference_in_days
+    # cut off the time part of the date, because we dont need it
+    date_counts = {datetime.strptime(date, "%Y-%m-%d %H:%M:%S").date(): count for date, count in date_counts.items()}
+    
+    return date_counts
 
 
-def get_relevant_docs(query, ground_truth_df):
+def get_relevant_docs(query: str, ground_truth_df: pd.DataFrame) -> List[int]:
     """
     Get relevant documents for a given query from the ground truth DataFrame.
+
+    Args:
+        query (str): Query string
+        ground_truth_df (pd.DataFrame): Ground truth DataFrame
+
+    Returns:
+        List: List of relevant documents
     """
     relevant_docs = ground_truth_df[ground_truth_df["query"] == query][
         "document_id"
     ].tolist()
+
     return relevant_docs
 
+def plot_evaluation_results(results: pd.DataFrame):
+    """
+    Plot evaluation results.
+
+    Args:
+        results (pd.DataFrame): Evaluation results DataFrame
+    """
+    results = results.drop(columns=['boolean_temporal_relevance', 'vector_space_temporal_relevance'])
+
+    axes = results.set_index("query").plot(
+        kind="bar", subplots=True, layout=(3, 3), legend=False
+    )
+
+    # Loop over the axes and remove the x-label
+    for ax in axes.flatten():
+        ax.set_xlabel("")
+
+    plt.tight_layout()
+    plt.show()
+
+def plot_temporal_relevance(results: pd.DataFrame):
+    """
+    Plot temporal relevance.
+
+    Args:
+        results (pd.DataFrame): DataFrame containing temporal relevance data
+    """
+    num_results = len(results)
+    num_cols = 2
+    num_rows = num_results // num_cols + (num_results % num_cols > 0)
+
+    fig, axs = plt.subplots(num_rows, num_cols, figsize=(10, 5*num_rows))
+
+    for i, (index, row) in enumerate(results.iterrows()):
+        boolean_temporal_relevance = row['boolean_temporal_relevance']
+        vector_space_temporal_relevance = row['vector_space_temporal_relevance']
+        query = row['query']
+
+        dates_boolean = list(boolean_temporal_relevance.keys())
+        counts_boolean = list(boolean_temporal_relevance.values())
+
+        dates_vector_space = list(vector_space_temporal_relevance.keys())
+        counts_vector_space = list(vector_space_temporal_relevance.values())
+
+        ax = axs[i // num_cols, i % num_cols]
+
+        width = 0.4  # the width of the bars
+
+        # Plot bars for boolean_temporal_relevance
+        ax.bar([i - width/2 for i in range(len(dates_boolean))], counts_boolean, width, label="Boolean", color='blue', alpha=0.5)
+
+        # Plot bars for vector_space_temporal_relevance
+        ax.bar([i + width/2 for i in range(len(dates_vector_space))], counts_vector_space, width, label="Vector Space", color='orange', alpha=0.5)
+                
+        ax.set_xlabel("Date")
+        ax.set_ylabel("Number of Documents")
+        ax.set_title(f"query: {query}")
+        ax.legend()
+
+        # Set x-tick labels
+        ax.set_xticks(range(len(dates_boolean)))
+        ax.set_xticklabels(dates_boolean, rotation=45, horizontalalignment='right')
+
+        # Reduce the number of x-axis labels
+        ax.xaxis.set_major_locator(MaxNLocator(nbins=6))
+
+    # Remove empty subplots
+    if num_results % num_cols > 0:
+        for j in range(num_results, num_rows*num_cols):
+            fig.delaxes(axs.flatten()[j])
+
+    plt.tight_layout()
+    plt.show()
 
 if __name__ == "__main__":
     """
@@ -107,10 +226,7 @@ if __name__ == "__main__":
     print("Evaluating Boolean and Vector Space Models")
     print("===========================================")
 
-    # Load ground truth data
-    cwd = os.getcwd()
-    file_path = os.path.join(cwd, "src/evaluation", "ground_truth.csv")
-    ground_truth_df = pd.read_csv(file_path)
+    ground_truth_df = pd.read_csv(GROUND_DATASET_FILE_PATH)
 
     results = []
 
@@ -125,8 +241,12 @@ if __name__ == "__main__":
         vector_space_api_response = call_vector_space_api(query)
 
         # Get retrieved documents
-        boolean_retrieved_docs = sorted([int(doc["id"]) for doc in boolean_api_response])
-        vector_space_retrieved_docs = sorted([int(doc["id"]) for doc in vector_space_api_response])
+        boolean_retrieved_docs = sorted(
+            [int(doc["id"]) for doc in boolean_api_response]
+        )
+        vector_space_retrieved_docs = sorted(
+            [int(doc["id"]) for doc in vector_space_api_response]
+        )
 
         # Calculate recall, precision, and F1 score
         boolean_recall, boolean_precision, boolean_f1 = evaluate_search_model(
@@ -137,9 +257,15 @@ if __name__ == "__main__":
         )
 
         # Calculate temporal relevance
-        boolean_temporal_relevance = calculate_temporal_relevance(boolean_api_response)
+        boolean_temporal_relevance = calculate_temporal_relevance(
+            retrieved_docs=boolean_api_response,
+            start_date=GROUND_DATASET_START_DATE,
+            end_date=GROUND_DATASET_END_DATE,
+        )
         vector_space_temporal_relevance = calculate_temporal_relevance(
-            vector_space_api_response
+            retrieved_docs=vector_space_api_response,
+            start_date=GROUND_DATASET_START_DATE,
+            end_date=GROUND_DATASET_END_DATE,
         )
 
         results.append(
@@ -160,11 +286,5 @@ if __name__ == "__main__":
     print(df)
     print(df.describe())
 
-    axes = df.set_index("query").plot(kind="bar", subplots=True, layout=(2, 4), legend=False)
-
-    # Loop over the axes and remove the x-label
-    for ax in axes.flatten():
-        ax.set_xlabel("")
-
-    plt.tight_layout()
-    plt.show()
+    plot_evaluation_results(df)
+    plot_temporal_relevance(df)
