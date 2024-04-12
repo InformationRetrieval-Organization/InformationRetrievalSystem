@@ -1,4 +1,4 @@
-from datetime import date, datetime
+from datetime import date, datetime, time
 import pandas as pd
 import os
 from dotenv import load_dotenv
@@ -36,9 +36,11 @@ def get_gnews_file_path():
     cwd = os.getcwd()
     return os.path.join(cwd, 'files', 'GNews.csv')
 
-def get_crawl_start_date() -> date:
-    return datetime.strptime(os.getenv("CRAWL_START_DATE"), "%Y-%m-%d").date()
+def get_crawl_start_date() -> datetime:
+    date = datetime.strptime(os.getenv("CRAWL_START_DATE"), "%Y-%m-%d").date()
+    return datetime.combine(date, time.min)
 
-def get_crawl_end_date() -> date:
-    return datetime.strptime(os.getenv("CRAWL_END_DATE"), "%Y-%m-%d").date()
+def get_crawl_end_date() -> datetime:
+    date = datetime.strptime(os.getenv("CRAWL_END_DATE"), "%Y-%m-%d").date()
+    return datetime.combine(date, time.max)
 
