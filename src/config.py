@@ -1,5 +1,6 @@
 from datetime import datetime, time
 import os
+import sys
 
 # Load environment variables
 from dotenv import load_dotenv
@@ -20,13 +21,17 @@ GROUND_DATASET_FILE_PATH = os.path.join(CWD, "files", "ground_truth.csv")
 INVERTED_INDEX_FILE_PATH = os.path.join(CWD, "files", "inverted_index.csv")
 
 # Crawl Dates
-GROUND_DATASET_START_DATE = datetime.combine(
-    datetime.strptime(os.getenv("GROUND_DATASET_START_DATE"), "%Y-%m-%d").date(),
-    time.min,
-)
-GROUND_DATASET_END_DATE = datetime.combine(
-    datetime.strptime(os.getenv("GROUND_DATASET_END_DATE"), "%Y-%m-%d").date(), time.max
-)
+try:
+    GROUND_DATASET_START_DATE = datetime.combine(
+        datetime.strptime(os.getenv("GROUND_DATASET_START_DATE"), "%Y-%m-%d").date(),
+        time.min,
+    )
+    GROUND_DATASET_END_DATE = datetime.combine(
+        datetime.strptime(os.getenv("GROUND_DATASET_END_DATE"), "%Y-%m-%d").date(), time.max
+    )
+except TypeError:
+    print("Please provide valid dates in the .env file.")
+    sys.exit(1)
 
 # Flask Environment
 FLASK_ENV = os.getenv("FLASK_ENV")
