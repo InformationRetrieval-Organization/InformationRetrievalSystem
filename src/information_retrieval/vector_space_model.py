@@ -48,7 +48,7 @@ async def search_vector_space(query: List[str]) -> List[int]:
     sorted_docs = sorted(doc_cosine_similiarity_map.items(), key=lambda x: x[1], reverse=True)
     # Extract the sorted document IDs into a list
     # In this contex "_" is a placeholder, we are not interested in it so we use this convention
-    sorted_doc_ids = [doc_id for doc_id, _ in sorted_docs]
+    sorted_doc_ids = [doc_id for doc_id, _ in sorted_docs if _ > 0.0]
     return sorted_doc_ids
 
 async def build_vector_space_model():
