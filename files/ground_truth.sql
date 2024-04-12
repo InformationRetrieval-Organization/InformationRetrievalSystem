@@ -9,7 +9,7 @@
 WITH search_terms AS (
     SELECT
         UNNEST(
-            ARRAY ['korea', 'election', 'korea election', 'president', 'parties', 'president parties']
+            ARRAY ['election', 'korea election', 'parties', 'president parties']
         ) AS query
 ),
 word_list AS (

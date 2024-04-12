@@ -26,10 +26,8 @@ vector_space_url = f"{base_url}/search/vector-space"
 # TODO: mark the relevant documents for each query manually
 # https://github.com/InformationRetrieval-Organization/InformationRetrievalSystem/issues/8
 queries = [
-    "korea",
     "election",
     "korea election",
-    "president",
     "parties",
     "president parties",
 ]
@@ -155,7 +153,7 @@ def plot_evaluation_results(results: pd.DataFrame):
     results = results.drop(columns=['boolean_temporal_relevance', 'vector_space_temporal_relevance'])
 
     axes = results.set_index("query").plot(
-        kind="bar", subplots=True, layout=(3, 3), legend=False
+        kind="bar", subplots=True, layout=(2, 3), legend=False
     )
 
     # Loop over the axes and remove the x-label
