@@ -21,7 +21,7 @@ async def preprocess_documents() -> list[str]:
         
     # Get the posts from the database
     posts = await get_all_posts()
-    posts = [(post.id, post.content, post.published_on) for post in posts]
+    posts = [(post.id, post.content, post.title, post.published_on) for post in posts]
     
     # Download the necessary resources
     nltk.download('punkt')
@@ -33,7 +33,8 @@ async def preprocess_documents() -> list[str]:
 
     for post in posts:        
         # Remove special characters and convert to lowercase
-        content = re.sub('[–!\"#$%&\'()*+,-./:;<=‘>—?@[\]^_`�{|}~0-9\n’“”]', '', post[1].lower())
+        content = post[1].lower() + " " + post[2].lower() # Add the title
+        content = re.sub('[–!\"#$%&\'()*+,-./:;<=‘>—?@[\]^_`�{|}~0-9\n’“”]', '', content)
         
         # Remove numerical values
         content = re.sub(r'\d+', '', content)
@@ -64,7 +65,7 @@ async def preprocess_documents() -> list[str]:
         })
         
         # Calculate the date coefficient
-        information_retrieval.globals._date_coefficient[post[0]] = calculate_date_coefficient(post[2], MAX_COEFFICIENT)
+        information_retrieval.globals._date_coefficient[post[0]] = calculate_date_coefficient(post[3], MAX_COEFFICIENT)
         
         set_term_freq_map(term_freq_map, tokens)
         
