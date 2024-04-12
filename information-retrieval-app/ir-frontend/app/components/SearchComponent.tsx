@@ -16,13 +16,15 @@ const SearchComponent = ({ searchType }: { searchType: string }) => {
             let url = '';
             let data = null;
 
-            if (searchType === 'vector-space') {
+            console.log("searchType: ", searchType);
+
+            if (searchType === 'vector-space') {  
                 url = `/search/${searchType}?q=${inputValue.replace(/\s/g, '+')}`;
-                data = await getBooleanArticles(url);
+                data = await getVectorSpaceArticles(url);
             } else if (searchType === 'boolean') {
                 url = `/search/${searchType}`;
                 const body = [{ operator: "AND", value: inputValue }, ...filters];
-                data = await getVectorSpaceArticles(url, body);
+                data = await getBooleanArticles(url, body);
             }
 
             setResults(data);

@@ -1,7 +1,8 @@
-//const baseUrl = process.env.IR_API_URL;
-const baseUrl = "http://127.0.0.1:5000";
+const baseUrl = process.env.IR_API_URL;
 
-export async function getBooleanArticles(url: string): Promise<ArticleResult[]> {
+export async function getVectorSpaceArticles(url: string): Promise<ArticleResult[]> {
+    console.log("variable: ", baseUrl);
+  
     const response = await fetch(`${baseUrl}${url}`);
 
     const data = await response.json();
@@ -13,7 +14,7 @@ export async function getBooleanArticles(url: string): Promise<ArticleResult[]> 
     return articles;
 }
 
-export async function getVectorSpaceArticles(url: string, filters: Filter[]): Promise<ArticleResult[]>{
+export async function getBooleanArticles(url: string, filters: Filter[]): Promise<ArticleResult[]>{
     const response = await fetch(`${baseUrl}${url}`, {
         method: 'POST',
         headers: {
