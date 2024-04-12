@@ -1,22 +1,35 @@
+from datetime import datetime
 import requests
 import asyncio
 import os
 from bs4 import BeautifulSoup
-from helper import *
+import sys
+from helper import append_to_csv
+
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
+
+from config import (
+    GUARDIAN_API_KEY,
+    GROUND_DATASET_START_DATE,
+    GROUND_DATASET_END_DATE,
+    GUARDIAN_FILE_PATH,
+)
 
 
-def get_guardian_data(api_key: str, begin_date: date, end_date: date, page: int = 1):
+def get_guardian_data(
+    api_key: str, begin_date: datetime, end_date: datetime, page: int = 1
+):
     """
     Get news articles from The Guardian API.
     """
     url = "https://content.guardianapis.com/search"
     params = {
         "api-key": api_key,
-        "from-date": begin_date.strftime("%Y-%m-%d"), # YYYY-MM-DD
-        "to-date": end_date.strftime("%Y-%m-%d"), # YYYY-MM-DD
+        "from-date": begin_date.strftime("%Y-%m-%d"),  # YYYY-MM-DD
+        "to-date": end_date.strftime("%Y-%m-%d"),  # YYYY-MM-DD
         "use-date": "published",
         "order-by": "newest",
-        "page-size": 10, # this is the maximum
+        "page-size": 10,  # this is the maximum
         "q": "korea",
         "page": page,
     }
@@ -46,25 +59,21 @@ async def crawl_guardian_data() -> None:
     """
     Crawl news articles from The Guardian API and save them to a CSV file.
     """
-    guardian_api_key = get_guardian_api_key()
-    begin_date = get_crawl_start_date()
-    end_date = get_crawl_end_date()
-    file_path = get_guardian_file_path()
 
     print("Crawling The Guardian data...")
-    print(f"Begin date: {begin_date}")
-    print(f"End date: {end_date}")
+    print(f"Begin date: {GROUND_DATASET_START_DATE}")
+    print(f"End date: {GROUND_DATASET_END_DATE}")
 
-    if os.path.exists(file_path):
-        os.remove(file_path)
+    if os.path.exists(GUARDIAN_FILE_PATH):
+        os.remove(GUARDIAN_FILE_PATH)
 
     page = 1
     total_articles = 0
     while True:
         response = get_guardian_data(
-            api_key=guardian_api_key,
-            begin_date=begin_date,
-            end_date=end_date,
+            api_key=GUARDIAN_API_KEY,
+            begin_date=GROUND_DATASET_START_DATE,
+            end_date=GROUND_DATASET_END_DATE,
             page=page,
         )
 
@@ -86,7 +95,7 @@ async def crawl_guardian_data() -> None:
                         "source": "The Guardian",
                     }
                 )
-            write_to_csv(file_path, articles)
+            append_to_csv(GUARDIAN_FILE_PATH, articles)
 
             total_articles += len(articles)
             page += 1

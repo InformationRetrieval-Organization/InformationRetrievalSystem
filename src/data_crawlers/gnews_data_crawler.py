@@ -1,10 +1,23 @@
+from datetime import datetime
 import requests
 import os
 import time as t
-from helper import *
+from helper import append_to_csv
+import sys
+
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
+
+from config import (
+    GNEWS_API_KEY,
+    GROUND_DATASET_START_DATE,
+    GROUND_DATASET_END_DATE,
+    GNEWS_FILE_PATH,
+)
 
 
-def get_gnews_data(api_key: str, begin_date: date, end_date: date, page: int = 1):
+def get_gnews_data(
+    api_key: str, begin_date: datetime, end_date: datetime, page: int = 1
+):
     """
     Get news articles from GNews API.
     """
@@ -33,23 +46,22 @@ def crawl_gnews_data() -> None:
     """
     Crawl news articles from GNews API and save them to a CSV file.
     """
-    gnews_api_key = get_gnews_api_key()
-    begin_date = get_crawl_start_date()
-    end_date = get_crawl_end_date()
-    file_path = get_gnews_file_path()
 
     print("Crawling GNews data...")
-    print(f"Begin date: {begin_date}")
-    print(f"End date: {end_date}")
+    print(f"Begin date: {GROUND_DATASET_START_DATE}")
+    print(f"End date: {GROUND_DATASET_END_DATE}")
 
-    if os.path.exists(file_path):
-        os.remove(file_path)
+    if os.path.exists(GNEWS_FILE_PATH):
+        os.remove(GNEWS_FILE_PATH)
 
     page = 1
     total_articles = 0
     while True:
         articles = get_gnews_data(
-            api_key=gnews_api_key, begin_date=begin_date, end_date=end_date, page=page
+            api_key=GNEWS_API_KEY,
+            begin_date=GROUND_DATASET_START_DATE,
+            end_date=GROUND_DATASET_END_DATE,
+            page=page,
         )
         if not articles:
             break
@@ -66,7 +78,7 @@ def crawl_gnews_data() -> None:
                 }
             )
 
-        write_to_csv(file_path, data)
+        append_to_csv(GNEWS_FILE_PATH, data)
 
         total_articles += len(data)
         page += 1

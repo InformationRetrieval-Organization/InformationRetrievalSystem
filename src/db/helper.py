@@ -4,6 +4,7 @@ from db.processed_posts import delete_all_processed_posts
 import os
 from dateutil.parser import parse
 import glob
+from config import GNEWS_FILE_PATH, GUARDIAN_FILE_PATH
 
 
 async def init_database():
@@ -13,20 +14,16 @@ async def init_database():
 
     await delete_all_posts()
     await delete_all_processed_posts()
-    await insert_posts()
+    await insert_file_posts()
 
 
-async def insert_posts():
+async def insert_file_posts():
     """
     Insert articles from files into the database
     """
     print("Inserting articles from files into the database")
 
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    files_path = os.path.abspath(os.path.join(script_dir, "..", "..", "files", "*.csv"))
-
-    # Get all CSV files in the directory
-    csv_files = glob.glob(files_path)
+    csv_files = [GNEWS_FILE_PATH, GUARDIAN_FILE_PATH]
 
     # Iterate over all CSV files
     for file_path in csv_files:

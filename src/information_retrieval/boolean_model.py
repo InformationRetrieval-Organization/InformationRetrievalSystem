@@ -5,13 +5,14 @@ from information_retrieval.linked_list import LinkedList
 import information_retrieval.globals 
 import pandas as pd
 import os
+from config import INVERTED_INDEX_FILE_PATH
 
 async def build_boolean_model():
     """
     Build the Boolean Model
     """
     print("Building Boolean Model")
-    csv_name = delete_old_csv() # Delete the old csv file if it exists
+    delete_old_csv() # Delete the old csv file if it exists
     
     # Get all posts content
     posts = await get_all_processed_posts()
@@ -30,7 +31,7 @@ async def build_boolean_model():
                 information_retrieval.globals._term_frequency[word] = 1
     
     # Create a DataFrame to store the search results
-    create_csv(csv_name)
+    create_csv()
     print("Boolean Model Built")
     
 def search_boolean_model(query):
@@ -79,18 +80,15 @@ def _not_processing(word, id_set):
         pass    # If the word is not in the index, it is not necessary to remove it
     return id_set
 
-def create_csv(csv_name):
+def create_csv():
     data = []
     for key, values in information_retrieval.globals._inverted_index.items():
         for value in values:
             data.append({"Key": key, "Value": value})
     
     df = pd.DataFrame(data, columns=['Key', 'Value'])
-    df.to_csv(csv_name, index=False)
+    df.to_csv(INVERTED_INDEX_FILE_PATH, index=False)
 
 def delete_old_csv():
-    csv_name = "inverted_index.csv"
-    file_path = os.path.join(os.getcwd(), csv_name)
-    if os.path.exists(file_path):
-        os.remove(file_path)
-    return csv_name
+    if os.path.exists(INVERTED_INDEX_FILE_PATH):
+        os.remove(INVERTED_INDEX_FILE_PATH)

@@ -11,24 +11,30 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import TimeoutException
 import asyncio
-from helper import *
+from helper import append_to_csv
+import sys
+
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
+
+from config import (
+    NYT_API_KEY,
+    GROUND_DATASET_START_DATE,
+    GROUND_DATASET_END_DATE,
+    NYT_FILE_PATH,
+)
 
 
 async def crawl_nyt_data() -> None:
     """
     Crawl news articles from New York Times and save them to a CSV file.
     """
-    nyt_api_key = get_nyt_api_key()
-    begin_date = get_crawl_start_date()
-    end_date = get_crawl_end_date()
-    file_path = get_nyt_file_path()
 
     print("Crawling New York Times data...")
-    print(f"Begin date: {begin_date}")
-    print(f"End date: {end_date}")
+    print(f"Begin date: {GROUND_DATASET_START_DATE}")
+    print(f"End date: {GROUND_DATASET_END_DATE}")
 
-    if os.path.exists(file_path):
-        os.remove(file_path)
+    if os.path.exists(NYT_FILE_PATH):
+        os.remove(NYT_FILE_PATH)
 
     driver = login_nyt()
 
@@ -36,28 +42,32 @@ async def crawl_nyt_data() -> None:
     page = 1
     total_articles = 0
     while True:
-        articles = get_articles(api_key=nyt_api_key, 
-                                begin_date=begin_date, 
-                                end_date=end_date, 
-                                query="korea",
-                                page=page)
+        articles = get_articles(
+            api_key=NYT_API_KEY,
+            begin_date=GROUND_DATASET_START_DATE,
+            end_date=GROUND_DATASET_END_DATE,
+            query="korea",
+            page=page,
+        )
         if not articles:
             break
 
         data = []
         for article in articles:
             full_text = get_full_article(article["web_url"], driver)
-            published_on = datetime.fromisoformat(article["pub_date"])   
+            published_on = datetime.fromisoformat(article["pub_date"])
 
-            data.append({
-                'title': article["headline"]["main"], 
-                'content': full_text, 
-                'published_on': published_on,
-                'link': article["web_url"],
-                'source': "New York Times"
-            })   
+            data.append(
+                {
+                    "title": article["headline"]["main"],
+                    "content": full_text,
+                    "published_on": published_on,
+                    "link": article["web_url"],
+                    "source": "New York Times",
+                }
+            )
 
-        write_to_csv(file_path, data)
+        append_to_csv(NYT_FILE_PATH, data)
 
         total_articles += len(data)
         page += 1
@@ -66,7 +76,9 @@ async def crawl_nyt_data() -> None:
     driver.quit()
 
 
-def get_articles(api_key: date, begin_date: date, end_date: date, query: str, page: int = 1):
+def get_articles(
+    api_key: date, begin_date: date, end_date: date, query: str, page: int = 1
+):
     """
     Get news articles from New York Times API.
     """
@@ -76,7 +88,7 @@ def get_articles(api_key: date, begin_date: date, end_date: date, query: str, pa
         "begin_date": begin_date,
         "end_date": end_date,
         "api-key": api_key,
-        "page": page
+        "page": page,
     }
 
     # limit of 1 request per minute and 500 per day
@@ -87,31 +99,39 @@ def get_articles(api_key: date, begin_date: date, end_date: date, query: str, pa
     else:
         return None
 
+
 def get_full_article(url, driver):
     """
     Get the full text of a news article from New York Times.
     """
     # Use the provided webdriver to access the logged-in session
     driver.get(url)
-      
+
     # Wait up to 10 seconds for the body tag to appear
     try:
-        WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.TAG_NAME, "articleBody")))
+        WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.TAG_NAME, "articleBody"))
+        )
     except TimeoutException:
-        print(f"TimeoutException: Element with tag name 'articleBody' not found on {url}")
+        print(
+            f"TimeoutException: Element with tag name 'articleBody' not found on {url}"
+        )
         return None
 
-    soup = BeautifulSoup(driver.page_source, 'html.parser')  # Parse the HTML from the webdriver
+    soup = BeautifulSoup(
+        driver.page_source, "html.parser"
+    )  # Parse the HTML from the webdriver
 
-    article_body = soup.find('section', {'name': 'articleBody'})
+    article_body = soup.find("section", {"name": "articleBody"})
 
     if article_body:
-        full_text = ' '.join([p.get_text() for p in article_body.find_all('p')])
+        full_text = " ".join([p.get_text() for p in article_body.find_all("p")])
         unwanted_text = "Open this article in the New York Times Audio app on iOS. Subscribe to The Times to read as many articles as you like."
         full_text = full_text.replace(unwanted_text, "")
         return full_text
     else:
         return None
+
 
 def login_nyt():
     """
@@ -123,7 +143,7 @@ def login_nyt():
     driver.get("https://myaccount.nytimes.com/auth/login")
 
     # uncomment this for automatic login, but i got blocked by NYT for too many requests
-    '''
+    """
     WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.TAG_NAME, "body")))
 
     email_input = driver.find_element("name", "email")
@@ -144,12 +164,13 @@ def login_nyt():
 
     continue_button = driver.find_element(By.XPATH, '//button[normalize-space()="Log In"]')
     continue_button.click()
-    '''
+    """
 
     # Pause the script until the user presses Enter
     input("Press Enter after you have completed the verification...")
 
     return driver
+
 
 if __name__ == "__main__":
     asyncio.run(crawl_nyt_data())
