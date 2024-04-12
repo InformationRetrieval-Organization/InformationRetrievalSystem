@@ -1,5 +1,5 @@
 import os
-from datetime import datetime
+from datetime import date, datetime
 import requests
 from bs4 import BeautifulSoup
 from selenium import webdriver
@@ -10,24 +10,18 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import TimeoutException
 import asyncio
-import pandas as pd
-from dotenv import load_dotenv
-from data_crawlers.helper import write_to_csv
+from helper import *
 
-load_dotenv()
-
-def get_nyt_api_key():
-    return os.getenv("NYT_API_KEY")
-
-def get_file_path():
-    cwd = os.getcwd()
-    return os.path.join(cwd, 'files', 'New York Times.csv')
 
 async def crawl_nyt_data() -> None:
-    nyt_api_key = get_nyt_api_key
-    begin_date = datetime.strptime("20240301", "%Y%m%d").date()
-    end_date = datetime.strptime("20240410", "%Y%m%d").date()
-    file_path = get_file_path()
+    nyt_api_key = get_nyt_api_key()
+    begin_date = get_crawl_start_date()
+    end_date = get_crawl_end_date()
+    file_path = get_nyt_file_path()
+
+    print("Crawling New York Times data...")
+    print(f"Begin date: {begin_date}")
+    print(f"End date: {end_date}")
 
     if os.path.exists(file_path):
         os.remove(file_path)
@@ -36,6 +30,7 @@ async def crawl_nyt_data() -> None:
 
     # because there is a limit of 10 articles per page, we need to loop through all pages
     page = 1
+    total_articles = 0
     while True:
         articles = get_articles(query="korea",
                                 begin_date=begin_date, 
@@ -60,8 +55,10 @@ async def crawl_nyt_data() -> None:
 
         write_to_csv(file_path, data)
 
+        total_articles += len(data)
         page += 1
 
+    print(f"Total articles retrieved: {total_articles}")
     driver.quit()
 
 

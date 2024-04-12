@@ -1,16 +1,9 @@
 import requests
 import pandas as pd
 import os
-from datetime import datetime
 import time
-from data_crawlers.helper import write_to_csv
+from helper import *
 
-def get_gnews_api_key():
-    return os.getenv("GNEWS_API_KEY")
-
-def get_file_path():
-    cwd = os.getcwd()
-    return os.path.join(cwd, 'files', 'GNews.csv')
 
 def get_gnews_data(api_key, begin_date, end_date, page):
     url = "https://gnews.io/api/v4/search"
@@ -33,14 +26,19 @@ def get_gnews_data(api_key, begin_date, end_date, page):
 
 def crawl_gnews_data() -> None:
     gnews_api_key = get_gnews_api_key()
-    begin_date = datetime.strptime("20240301", "%Y%m%d").date()
-    end_date = datetime.strptime("20240410", "%Y%m%d").date()
-    file_path = get_file_path()
+    begin_date = get_crawl_start_date()
+    end_date = get_crawl_end_date()
+    file_path = get_gnews_file_path()
+
+    print("Crawling GNews data...")
+    print(f"Begin date: {begin_date}")
+    print(f"End date: {end_date}")
 
     if os.path.exists(file_path):
         os.remove(file_path)
 
     page = 1
+    total_articles = 0
     while True:
         articles = get_gnews_data(gnews_api_key, begin_date, end_date, page)
         if not articles:
@@ -62,10 +60,13 @@ def crawl_gnews_data() -> None:
 
         write_to_csv(file_path, data)
 
+        total_articles += len(data)
         page += 1
 
         # Pause for 0.2 second to avoid exceeding the rate limit of 6 requests per second
         time.sleep(0.2)
+
+    print(f"Total articles retrieved: {total_articles}")
 
 if __name__ == "__main__":
     crawl_gnews_data()
