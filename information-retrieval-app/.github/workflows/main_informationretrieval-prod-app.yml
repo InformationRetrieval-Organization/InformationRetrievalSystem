@@ -3,10 +3,14 @@
 
 name: Build and deploy Node.js app to Azure Web App - informationretrieval-prod-app
 
+# github ci/cd have some issues with next.js
+# deployment over azure app service extension
+# https://github.com/vercel/next.js/discussions/56010
+# https://stackoverflow.com/questions/77615177/error-in-nextjs-app-error-cannot-find-module-next-dist-client-components-stat/77894267#77894267
 on:
-  push:
-    branches:
-      - main
+  # push:
+  #   branches:
+  #     - main
   workflow_dispatch:
 
 jobs:

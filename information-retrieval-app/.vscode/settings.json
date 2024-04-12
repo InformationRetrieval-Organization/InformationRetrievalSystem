@@ -1,4 +1,10 @@
 {
   "typescript.tsdk": "node_modules/typescript/lib",
-  "cSpell.enabled": false
+  "cSpell.enabled": false,
+  "appService.zipIgnorePattern": [
+    "node_modules{,/**}",
+    ".vscode{,/**}"
+  ],
+  "appService.defaultWebAppToDeploy": "/subscriptions/ea98b20c-17ef-464f-a13b-e2a2e6583710/resourceGroups/prod-gerwe-informationretrieval/providers/Microsoft.Web/sites/informationretrieval-prod-app",
+  "appService.deploySubpath": "."
 }

@@ -26,3 +26,10 @@ npm install
 ```bash
 npm run dev
 ```
+
+## deployment
+```bash
+npm run build
+npm run start
+```
+deployment on azure over vscode azure app service extension
