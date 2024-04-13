@@ -150,9 +150,14 @@ def get_relevant_docs(query: str, ground_truth_df: pd.DataFrame) -> List[int]:
     Returns:
         List: List of relevant documents
     """
-    relevant_docs = ground_truth_df[ground_truth_df["query"] == query][
-        "document_id"
+    # give me only the id and titel column rows
+    relevant_docs = ground_truth_df[[query, "id"]]
+    
+    relevant_docs = relevant_docs[relevant_docs[query] == True][
+        "id"
     ].tolist()
+
+    print(f"Relevant Docs: {relevant_docs}")
 
     return relevant_docs
 
@@ -172,6 +177,7 @@ def plot_evaluation_results(results: pd.DataFrame):
     # Loop over the axes and remove the x-label
     for ax in axes.flatten():
         ax.set_xlabel("")
+        ax.set_ylim([0, 1])
 
     plt.tight_layout()
     plt.show()
@@ -246,7 +252,7 @@ if __name__ == "__main__":
         print(f"Query: {vector_queries[query]}")
 
         # Get relevant documents from ground truth
-        relevant_docs = get_relevant_docs(query, ground_truth_df)
+        relevant_docs = get_relevant_docs(vector_queries[query], ground_truth_df)
 
         # Call Boolean and Vector Space APIs
         boolean_api_response = call_boolean_api(boolean_queries[query])
