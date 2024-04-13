@@ -21,6 +21,9 @@ async def search_vector_space_model():
         word = lemmatizer.lemmatize(word.lower())
         lemmatized_query.append(word)
                 
+    # Add synonyms to the list
+    add_synonyms(lemmatized_query)
+    
     id_list = await search_vector_space(lemmatized_query)
         
     posts = await get_all_posts()
@@ -31,3 +34,14 @@ async def search_vector_space_model():
     json_string = object_schema.dumps(filtered_posts, many=True)
     
     return json_string
+
+def add_synonyms(lemmatized_query):
+    for word in lemmatized_query:
+        if word == 'ppp':
+            lemmatized_query.append('people power party')
+        elif word == 'dp':
+            lemmatized_query.append('democratic party')
+        elif word == 'people power party':
+            lemmatized_query.append('ppp')
+        elif word == 'democratic party':
+            lemmatized_query.append('dp')

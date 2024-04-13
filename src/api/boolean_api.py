@@ -24,6 +24,9 @@ async def search_post():
         word = lemmatizer.lemmatize(item['value'].lower())
         operator_value_list.append((item['operator'], word.lower()))
     
+    # Add synonyms to the list
+    add_synonyms(operator_value_list)
+    
     id_list = search_boolean_model(operator_value_list)
     
     posts = await get_all_posts()
@@ -36,5 +39,16 @@ async def search_post():
     json_string = object_schema.dumps(filtered_posts, many=True)
     
     return json_string
+
+def add_synonyms(operator_value_list):
+    for item in operator_value_list:
+        if item[1] == 'ppp':
+            operator_value_list.add(('OR', 'people power party')) 
+        elif item[1] == 'dp':
+            operator_value_list.add(('OR', 'democratic party'))
+        elif item[1] == 'people power party':
+            operator_value_list.add(('OR', 'ppp'))
+        elif item[1] == 'democratic party':
+            operator_value_list.add(('OR', 'dp'))
 
 
