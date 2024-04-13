@@ -25,11 +25,24 @@ vector_space_url = f"{base_url}/search/vector-space"
 
 # TODO: mark the relevant documents for each query manually
 # https://github.com/InformationRetrieval-Organization/InformationRetrievalSystem/issues/8
-queries = [
-    "election",
-    "korea election",
-    "parties",
-    "president parties",
+vector_queries = [
+    "political corruption scandals",
+    "election 2024 turnout",
+    "democratic party",
+    "women rights people power party",
+]
+
+boolean_queries = [
+    [{"operator": "AND", "value": "political"}, {"operator": "AND", "value": "corruption"}, {"operator": "OR", "value": "scandals"}],
+    [{"operator": "AND", "value": "election"}, {"operator": "OR", "value": "2024"}, {"operator": "OR", "value": "turnout"}],
+    [{"operator": "AND", "value": "democratic"}, {"operator": "OR", "value": "party"}],
+    [
+        {"operator": "AND", "value": "women"},
+        {"operator": "AND", "value": "rights"},
+        {"operator": "OR", "value": "people"},
+        {"operator": "OR", "value": "power"},
+        {"operator": "AND", "value": "party"},
+    ],
 ]
 
 
@@ -61,15 +74,15 @@ def evaluate_search_model(relevant_docs: List[int], retrieved_docs: List[int]) -
     return recall, precision, f1
 
 
-def call_boolean_api(query: str) -> List[models.Post]:
+def call_boolean_api(query) -> List[models.Post]:
     """
     Call Boolean API
     TODO: whats with OR and NOT operators?
     """
     url = f"{boolean_api_url}"
-    body = [{"operator": "AND", "value": word} for word in query.split()]
+
     headers = {"Content-Type": "application/json"}
-    response = requests.post(url, data=json.dumps(body), headers=headers)
+    response = requests.post(url, data=json.dumps(query), headers=headers)
     response.raise_for_status()
 
     return response.json()
@@ -228,15 +241,16 @@ if __name__ == "__main__":
 
     results = []
 
-    for query in queries:
-        print(f"Query: {query}")
+    for query in range(0,len(vector_queries)):
+        print(f"Query: {boolean_queries[query]}")
+        print(f"Query: {vector_queries[query]}")
 
         # Get relevant documents from ground truth
         relevant_docs = get_relevant_docs(query, ground_truth_df)
 
         # Call Boolean and Vector Space APIs
-        boolean_api_response = call_boolean_api(query)
-        vector_space_api_response = call_vector_space_api(query)
+        boolean_api_response = call_boolean_api(boolean_queries[query])
+        vector_space_api_response = call_vector_space_api(vector_queries[query])
 
         # Get retrieved documents
         boolean_retrieved_docs = sorted(
@@ -268,7 +282,7 @@ if __name__ == "__main__":
 
         results.append(
             {
-                "query": query,
+                "query": vector_queries[query],
                 "boolean_recall": boolean_recall,
                 "boolean_precision": boolean_precision,
                 "boolean_f1": boolean_f1,
