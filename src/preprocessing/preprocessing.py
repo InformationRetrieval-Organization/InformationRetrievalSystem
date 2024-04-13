@@ -1,4 +1,5 @@
 import re
+from typing import Dict, List, Set
 import nltk
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
@@ -8,6 +9,7 @@ from db.posts import get_all_posts
 import information_retrieval.globals 
 from nltk import FreqDist
 from datetime import datetime
+
 
 async def preprocess_documents() -> list[str]:
     """
@@ -73,9 +75,10 @@ async def preprocess_documents() -> list[str]:
     
     # Find tokens that occur only once
     unique_tokens = [key for key, value in term_freq_map.items() if value == 1]
-        
     list_of_tokens = [token for token in list_of_tokens if token not in unique_tokens]
-            
+    
+    # Calculate SVD and remove the least important tokens
+                
     # Create DB entries
     await create_many_processed_posts(processed_posts)
 
@@ -86,7 +89,7 @@ async def preprocess_documents() -> list[str]:
     
     return list_of_tokens
 
-def set_term_freq_map(term_freq_map: dict, tokens: list) -> None:
+def set_term_freq_map(term_freq_map: Dict[str, int], tokens: List[str]) -> None:
     """
     Set the term frequency map for a document.
     """
@@ -96,7 +99,7 @@ def set_term_freq_map(term_freq_map: dict, tokens: list) -> None:
         else:
             term_freq_map[token] = 1
 
-def is_english(content: str, threshold: float, english_words: set) -> bool:
+def is_english(content: str, threshold: float, english_words: Set[str]) -> bool:
     """
     Determine if a document is in English based on the ratio of English words.
     """
@@ -121,3 +124,5 @@ def calculate_date_coefficient(post_date: datetime, max_coefficient: int) -> int
     
     days_since_oldest = (post_date - oldest_date).days
     return coefficient_per_day * days_since_oldest + 1
+
+    
