@@ -36,10 +36,7 @@ async def preprocess_documents() -> list[str]:
     for post in posts:        
         # Remove special characters and convert to lowercase
         content = post[1].lower() + " " + post[2].lower() # Add the title
-        content = re.sub('[–!\"#$%&\'()*+,-./:;<=‘>—?@[\]^_`�{|}~0-9\n’“”]', '', content)
-        
-        # Remove numerical values
-        content = re.sub(r'\d+', '', content)
+        content = re.sub('[–!\"#$%&\'()*+,-./:;<=‘>—?@[\]^_`�{|}~\n’“”]', '', content)
                         
         # Remove posts with a low english word ratio
         threshold = 0.7
