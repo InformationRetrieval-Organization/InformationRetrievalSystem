@@ -1,37 +1,43 @@
-import asyncio
-from flask import Flask
-from api.vector_space_api import vector_space_search_blueprint
-from api.boolean_api import boolean_search_blueprint
+from contextlib import asynccontextmanager
+from fastapi import FastAPI
 from information_retrieval.vector_space_model import build_vector_space_model
 from information_retrieval.boolean_model import build_boolean_model
 from preprocessing.preprocessing import preprocess_documents
+from api.vector_space_api import router as vector_space_router
+from api.boolean_api import router as boolean_router
 from db.helper import init_database
-import information_retrieval.globals
-from flask_cors import CORS
-from config import FLASK_ENV
+from information_retrieval.globals import init
+from fastapi.middleware.cors import CORSMiddleware
+import uvicorn
 
-app = Flask(__name__)
-app.register_blueprint(vector_space_search_blueprint)
-app.register_blueprint(boolean_search_blueprint)
 
-# Enable CORS for the Flask app
-CORS(app)
-
-async def main():
-    """
-    Main function to run the Flask app
-    """
-    print("Flask app started.")
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    print("FastAPI app started.")
 
     await init_database()
 
-    information_retrieval.globals.init()
-    await preprocess_documents() 
+    init()
+    await preprocess_documents()
     await build_boolean_model()
     await build_vector_space_model()
 
-    if FLASK_ENV == 'development':
-        app.run()
+    yield
 
-# Run the main function when the script is imported
-asyncio.run(main())
+
+app = FastAPI(lifespan=lifespan)
+
+app.include_router(vector_space_router)
+app.include_router(boolean_router)
+
+# Enable CORS for the FastAPI app
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8000)

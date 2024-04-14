@@ -1,6 +1,6 @@
 prisma
-flask[async]
-flask-cors
+fastapi
+uvicorn[standard]
 scikit-learn
 nltk
 bs4

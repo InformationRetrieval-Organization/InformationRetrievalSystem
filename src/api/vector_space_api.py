@@ -1,18 +1,18 @@
-from flask import Blueprint, request
-from information_retrieval.vector_space_model import search_vector_space
+from fastapi import APIRouter
+from typing import List
 import nltk
-from api.schemas import ObjectSchema
+from information_retrieval.vector_space_model import search_vector_space
 from db.posts import get_all_posts
 
-vector_space_search_blueprint = Blueprint('vector_space_search', __name__)
+router = APIRouter()
 
-@vector_space_search_blueprint.route('/search/vector-space', methods=['GET'])
-async def search_vector_space_model():
+@router.get("/search/vector-space")
+async def search_vector_space_model(q: str):
     """
     Search the Vector Space Model for the given query.
-    url: http://127.0.0.1:5000/search/vector-space?q=your_search_term
+    url: http://127.0.0.1:8000/search/vector-space?q=your_search_term
     """
-    query = request.args.get('q')
+    query = q
     
     lemmatizer = nltk.stem.WordNetLemmatizer()
     lemmatized_query = list()
@@ -30,10 +30,7 @@ async def search_vector_space_model():
     filtered_posts = [post for post in posts if post.id in id_list]
     filtered_posts = sorted(filtered_posts, key=lambda x: id_list.index(x.id))
         
-    object_schema = ObjectSchema()
-    json_string = object_schema.dumps(filtered_posts, many=True)
-    
-    return json_string
+    return filtered_posts
 
 def add_synonyms(lemmatized_query):
     for word in lemmatized_query:
