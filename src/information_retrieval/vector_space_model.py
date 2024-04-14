@@ -20,25 +20,23 @@ async def search_vector_space_model(query: List[str]) -> List[int]:
     total_documents = len(posts)
     inverse_document_frequency = {}
     # Matrix dimension 1x1
-    query_weight_matrix = []
 
     for term in information_retrieval.globals._vocabulary:
         df = information_retrieval.globals._inverted_index[term].length()
         # Calculate the inverse document frequency (IDF) for each term
         inverse_document_frequency[term] = compute_inverse_document_frequency(total_documents, df)
  
-    # Every post has its own vector which is created below
+    # creating the tfidf-query vector
     tfidf_vector = [compute_tf_idf_weighting(compute_sublinear_tf_scaling(query.count(term)), inverse_document_frequency[term]) for term in information_retrieval.globals._vocabulary]
-    query_weight_matrix = tfidf_vector
     # Map each document by id to the corressponding cosine similiarity
     doc_cosine_similiarity_map = {}
 
     for doc_id, vector in information_retrieval.globals._document_id_vector_map.items():
         # Calculate the Cosine similiarity by using the numpy library
         # Calculating the dot product between the Queryvector and the Documentvector
-        dot_product = np.dot(query_weight_matrix, vector)
+        dot_product = np.dot(tfidf_vector, vector)
         # Calculate the norms for the Queryvector and the Documentvector
-        magnitude_query = np.linalg.norm(query_weight_matrix)
+        magnitude_query = np.linalg.norm(tfidf_vector)
         magnitude_entry = np.linalg.norm(vector)
         # Calculating the Cosine similiarity
         cosine_similarity = dot_product / (magnitude_query * magnitude_entry)
@@ -78,9 +76,9 @@ async def build_vector_space_model():
         # Every post has its own vector these are created below and added in the corresponding maps
         tfidf_vector = [compute_tf_idf_weighting(compute_sublinear_tf_scaling(post[1].count(term)), inverse_document_frequency[term]) for term in vocabulary]
         # Matrix dimension is term x documents
-        information_retrieval.globals._term_document_weight_matrix.append(tfidf_vector)
+        # matrix has now the dimension (524, 6643) => dokument to word if i want the word to ducment matrix i have to transpose the matrix
+        information_retrieval.globals._document_term_weight_matrix.append(tfidf_vector)
         information_retrieval.globals._document_id_vector_map[post[0]] = tfidf_vector 
-
     print("Vector Space Model Built")
     return None
 
