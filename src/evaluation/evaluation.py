@@ -17,9 +17,11 @@ from config import (
     GROUND_DATASET_START_DATE,
     GROUND_DATASET_END_DATE,
     GROUND_DATASET_FILE_PATH,
+    EVAL_MEAS_FILE_PATH,
+    EVAL_DATE_FILE_PATH,
 )
 
-base_url = "http://127.0.0.1:5000"
+base_url = "http://127.0.0.1:8000"
 boolean_api_url = f"{base_url}/search/boolean"
 vector_space_url = f"{base_url}/search/vector-space"
 
@@ -126,7 +128,7 @@ def calculate_temporal_relevance(
         date_time_str = doc["published_on"]
 
         # convert to datetime object and reset time
-        date_time_obj = datetime.strptime(date_time_str, "%Y-%m-%d %H:%M:%S%z")
+        date_time_obj = datetime.strptime(date_time_str, "%Y-%m-%dT%H:%M:%SZ")
         date = date_time_obj.replace(second=0, minute=0, hour=0)
         date = date.strftime("%Y-%m-%d %H:%M:%S")
 
@@ -157,8 +159,6 @@ def get_relevant_docs(query: str, ground_truth_df: pd.DataFrame) -> List[int]:
         "id"
     ].tolist()
 
-    print(f"Relevant Docs: {relevant_docs}")
-
     return relevant_docs
 
 def plot_evaluation_results(results: pd.DataFrame):
@@ -170,16 +170,22 @@ def plot_evaluation_results(results: pd.DataFrame):
     """
     results = results.drop(columns=['boolean_temporal_relevance', 'vector_space_temporal_relevance'])
 
+    fig, axes = plt.subplots(nrows=2, ncols=3, figsize=(15, 10))  # Increase figure size
+
     axes = results.set_index("query").plot(
-        kind="bar", subplots=True, layout=(2, 3), legend=False
+        kind="bar", subplots=True,ax=axes, layout=(2, 3), legend=False
     )
 
     # Loop over the axes and remove the x-label
     for ax in axes.flatten():
-        ax.set_xlabel("")
         ax.set_ylim([0, 1])
+        ax.set_ylabel("Score")
+
+        ax.set_xticks(range(len(results)))
+        ax.set_xticklabels(ax.get_xticklabels(), rotation=45, horizontalalignment='right')  # Adjust alignment
 
     plt.tight_layout()
+    plt.savefig(EVAL_MEAS_FILE_PATH)
     plt.show()
 
 def plot_temporal_relevance(results: pd.DataFrame):
@@ -234,6 +240,7 @@ def plot_temporal_relevance(results: pd.DataFrame):
             fig.delaxes(axs.flatten()[j])
 
     plt.tight_layout()
+    plt.savefig(EVAL_DATE_FILE_PATH)
     plt.show()
 
 if __name__ == "__main__":

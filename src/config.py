@@ -19,6 +19,8 @@ NYT_FILE_PATH = os.path.join(CWD, "files", "New York Times.csv")
 GNEWS_FILE_PATH = os.path.join(CWD, "files", "GNews.csv")
 GROUND_DATASET_FILE_PATH = os.path.join(CWD, "files", "ground_truth.csv")
 INVERTED_INDEX_FILE_PATH = os.path.join(CWD, "files", "inverted_index.csv")
+EVAL_MEAS_FILE_PATH = os.path.join(CWD, "files", "evaluation_measures.png")
+EVAL_DATE_FILE_PATH = os.path.join(CWD, "files", "evaluation_temporal_relevance.png")
 
 # Crawl Dates
 try:
