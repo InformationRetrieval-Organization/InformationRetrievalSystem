@@ -8,13 +8,13 @@ import { getBooleanArticles, getVectorSpaceArticles } from '../api/information_r
 
 const SearchComponent = ({ searchType }: { searchType: string }) => {
     const [inputValue, setInputValue] = useState("");
-    const [results, setResults] = useState<ArticleResult[] | null>(null);
+    const [results, setResults] = useState<ArticleResult[]>([]);
     const [filters, setFilters] = useState<Filter[]>([{ operator: "AND", value: "" }]);
 
     const fetchData = async () => {
         try {
             let url = '';
-            let data = null;
+            let data: ArticleResult[] = [];
 
             if (searchType === 'vector-space') {
                 url = `/search/${searchType}?q=${inputValue.replace(/\s/g, '+')}`;

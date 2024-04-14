@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Card, CardHeader, CardBody, Link, Pagination } from "@nextui-org/react";
 
 function truncateContent(content: string, wordLimit: number) {
@@ -10,18 +10,31 @@ function truncateContent(content: string, wordLimit: number) {
     }
 }
 
-export default function ResultsList({ results }: { results: ArticleResult[] | null }) {
+export default function ResultsList({ results }: { results: ArticleResult[] }) {
     const [currentPage, setCurrentPage] = useState(1);
+    const [searchPerformed, setSearchPerformed] = useState(false);
+    const [initialRender, setInitialRender] = useState(true);
     const resultsPerPage = 10;
-
-    if (!results) {
-        return null;
-    }
 
     // Calculate the range of results for the current page
     const startIndex = (currentPage - 1) * resultsPerPage;
     const endIndex = startIndex + resultsPerPage;
     const resultsForPage = results.slice(startIndex, endIndex);
+
+    // On the initial render, it sets initialRender to false.
+    // On subsequent renders (when results change), it sets searchPerformed to true.
+    useEffect(() => {
+        if (initialRender) {
+            setInitialRender(false);
+        } else {
+            setSearchPerformed(true);
+        }
+    }, [results]);
+
+    // If the search was performed and no results were found, display a message
+    if (searchPerformed && results.length === 0) {
+        return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>Nothing found</div>
+    }
 
     return (
         <div>
@@ -33,8 +46,7 @@ export default function ResultsList({ results }: { results: ArticleResult[] | nu
                                 <Link
                                     isExternal
                                     showAnchorIcon
-                                    href={result.link}
-                                >
+                                    href={result.link}>
                                     {result.title}
                                 </Link>
                             </p>
