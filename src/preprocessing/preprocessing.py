@@ -74,8 +74,6 @@ async def preprocess_documents() -> list[str]:
     unique_tokens = [key for key, value in term_freq_map.items() if value == 1]
     list_of_tokens = [token for token in list_of_tokens if token not in unique_tokens]
     
-    # Calculate SVD and remove the least important tokens
-
     # remove duplicates
     processed_posts = list({post['content']: post for post in processed_posts}.values())
                 
