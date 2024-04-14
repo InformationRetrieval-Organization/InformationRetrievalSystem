@@ -2,9 +2,11 @@
 
 ## documents
 
-[preparation sheet](https://docs.google.com/document/d/1CyZr6BCO7HAJkWeOlmOVO5_PjgciXi6qZNcJ2JwUiyE/edit?usp=sharing)
+[preparation doc](https://docs.google.com/document/d/1CyZr6BCO7HAJkWeOlmOVO5_PjgciXi6qZNcJ2JwUiyE/edit?usp=sharing)
 
-[evaluation sheet](https://docs.google.com/document/d/1RlGlw1xzIZ5iDCYKw6M5eYVcVZCS67_rZi2n-odH48c/edit?usp=sharing)
+[evaluation doc](https://docs.google.com/document/d/1RlGlw1xzIZ5iDCYKw6M5eYVcVZCS67_rZi2n-odH48c/edit?usp=sharing)
+
+[ground truth sheet](https://docs.google.com/spreadsheets/d/1wl72UrtBVSqMwfYwsJgIb21gftcBTYMtiB67N0tCS7A/edit?usp=sharing)
 
 ## requirements
 
