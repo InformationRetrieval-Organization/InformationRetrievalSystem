@@ -1,38 +1,35 @@
-from flask import Blueprint, request
+from fastapi import APIRouter
+from typing import List
+from pydantic import BaseModel
 import nltk
 from information_retrieval.boolean_model import search_boolean_model
 from db.posts import get_all_posts
-from api.schemas import ObjectSchema
-from flask_cors import CORS
 
-boolean_search_blueprint = Blueprint('boolean_search', __name__)
+router = APIRouter()
 
-CORS(boolean_search_blueprint)
+class Item(BaseModel):
+    operator: str
+    value: str
 
-@boolean_search_blueprint.route('/search/boolean', methods=['POST'])
-async def search_post():
+@router.post("/search/boolean")
+async def search_post(items: List[Item]):
     """
     Search the Boolean Model for the given query.
-    url: http://127.0.0.1:5000/search/boolean
+    url: http://127.0.0.1:8000/search/boolean
     """
-    json_request = request.get_json()
-    
     operator_value_list = []
     lemmatizer = nltk.stem.WordNetLemmatizer()
- 
-    for item in json_request:
-        word = lemmatizer.lemmatize(item['value'].lower())
-        operator_value_list.append((item['operator'], word.lower()))
-    
+
+    for item in items:
+        word = lemmatizer.lemmatize(item.value.lower())
+        operator_value_list.append((item.operator, word.lower()))
+
     id_list = search_boolean_model(operator_value_list)
-    
+
     posts = await get_all_posts()
     filtered_posts = [post for post in posts if post.id in id_list]
-    
+
     # Sort posts based on time
     filtered_posts.sort(key=lambda x: x.published_on, reverse=True)
-    
-    object_schema = ObjectSchema()
-    json_string = object_schema.dumps(filtered_posts, many=True)
-    
-    return json_string
+
+    return filtered_posts
