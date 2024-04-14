@@ -8,8 +8,13 @@ from api.boolean_api import router as boolean_router
 from db.helper import init_database
 from information_retrieval.globals import init
 from fastapi.middleware.cors import CORSMiddleware
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.middleware import SlowAPIMiddleware
+from slowapi.errors import RateLimitExceeded
 import uvicorn
 
+limiter = Limiter(key_func=get_remote_address, default_limits=["30/minute"])
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -31,6 +36,10 @@ app = FastAPI(
     version="1.0.0",
     lifespan=lifespan,
 )
+
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+app.add_middleware(SlowAPIMiddleware)
 
 app.include_router(vector_space_router, tags=["Vector Space Search"])
 app.include_router(boolean_router, tags=["Boolean Search"])
