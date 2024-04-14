@@ -34,7 +34,6 @@ pip install --upgrade pip
 * when you want to crawl data, you have to set the API keys
 
 ## database 
-
 ```bash
 docker compose -f docker.compose.yml up -d
 prisma db push
@@ -53,8 +52,11 @@ Connection tab requires to type:
 3) Username: postgres
 4) Password: postgres
 
-## production deployment
-
+## optional: azure deployment
+this is the startup command;
 ```bash
-gunicorn -c gunicorn_config.py main:app
+prisma db push && uvicorn --app-dir src main:app --host 0.0.0.0 --port 8000
 ```
+
+## optional: swagger
+Open `http://localhost:8000/docs` to see the swagger UI
