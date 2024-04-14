@@ -8,7 +8,7 @@ import information_retrieval.linked_list
 import numpy as np
 
 
-async def search_vector_space(query: List[str]) -> List[int]: 
+async def search_vector_space_model(query: List[str]) -> List[int]: 
     """
     Creates the Queryvector and calculates the cosine similiarity between the Queryvector and the Documentvectors
     """

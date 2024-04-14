@@ -1,16 +1,16 @@
 from fastapi import APIRouter
 from typing import List
 import nltk
-from information_retrieval.vector_space_model import search_vector_space
+from information_retrieval.vector_space_model import search_vector_space_model
 from db.posts import get_all_posts
 
 router = APIRouter()
 
 @router.get("/search/vector-space")
-async def search_vector_space_model(q: str):
+async def search_vector_space(q: str):
     """
-    Search the Vector Space Model for the given query.
-    url: http://127.0.0.1:8000/search/vector-space?q=your_search_term
+    Search the Vector Space Model for the given query.<br>
+    Example usage: http://127.0.0.1:8000/search/vector-space?q=your_search_term
     """
     query = q
     
@@ -24,7 +24,7 @@ async def search_vector_space_model(q: str):
     # Add synonyms to the list
     add_synonyms(lemmatized_query)
     
-    id_list = await search_vector_space(lemmatized_query)
+    id_list = await search_vector_space_model(lemmatized_query)
         
     posts = await get_all_posts()
     filtered_posts = [post for post in posts if post.id in id_list]

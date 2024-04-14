@@ -12,10 +12,10 @@ class Item(BaseModel):
     value: str
 
 @router.post("/search/boolean")
-async def search_post(items: List[Item]):
+async def search_boolean(items: List[Item]):
     """
-    Search the Boolean Model for the given query.
-    url: http://127.0.0.1:8000/search/boolean
+    Search the Boolean Model for the given query.<br>
+    Example usage: http://127.0.0.1:8000/search/boolean
     """
     operator_value_list = []
     lemmatizer = nltk.stem.WordNetLemmatizer()

@@ -25,10 +25,15 @@ async def lifespan(app: FastAPI):
     yield
 
 
-app = FastAPI(lifespan=lifespan)
+app = FastAPI(
+    title="Information Retrieval API",
+    description="API for Information Retrieval System.",
+    version="1.0.0",
+    lifespan=lifespan,
+)
 
-app.include_router(vector_space_router)
-app.include_router(boolean_router)
+app.include_router(vector_space_router, tags=["Vector Space Search"])
+app.include_router(boolean_router, tags=["Boolean Search"])
 
 # Enable CORS for the FastAPI app
 app.add_middleware(
