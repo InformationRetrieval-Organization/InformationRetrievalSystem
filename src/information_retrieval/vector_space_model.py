@@ -98,7 +98,6 @@ async def build_vector_space_model():
         information_retrieval.globals._document_term_weight_matrix.append(tfidf_vector)
         information_retrieval.globals._document_id_vector_map[post[0]] = tfidf_vector 
     
-    singualar_value_decomposition() # Build the SVD matrix
     
     print("Vector Space Model Built")
     return None
@@ -114,10 +113,11 @@ def compute_sublinear_tf_scaling(tf: int) -> float:
         return 1 + math.log(tf) 
     return 0
 
-def singualar_value_decomposition():
+async def execute_singualar_value_decomposition():
     """
     Singular Value Decomposition
     """
+    print("Start Executing SVD")
     documents_vector_list = list(information_retrieval.globals._document_id_vector_map.items()) # get the list of documents and their vectors
     vector_list = [vector for _, vector in documents_vector_list] # get the list of vectors
     documentids_list = [doc_id for doc_id, _ in documents_vector_list] # get the list of document ids
@@ -136,7 +136,6 @@ def singualar_value_decomposition():
             break
             
     # reduce the dimensionality of the matrix
-    print(k)
     information_retrieval.globals._U_reduced = U[:, :k]
     information_retrieval.globals._S_reduced = S[:k]
     Vt_reduced = Vt[:k, :]
@@ -148,3 +147,4 @@ def singualar_value_decomposition():
         vector = np.ravel(information_retrieval.globals._V_reduced[i,:]) # Get the ith row of the V_reduced matrix and convert it to a 1D array
         information_retrieval.globals._document_svd_matrix[doc_id] = vector 
         i += 1
+    print("SVD executed")

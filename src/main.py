@@ -1,6 +1,6 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
-from information_retrieval.vector_space_model import build_vector_space_model
+from information_retrieval.vector_space_model import build_vector_space_model, execute_singualar_value_decomposition
 from information_retrieval.boolean_model import build_boolean_model
 from preprocessing.preprocessing import preprocess_documents
 from api.vector_space_api import router as vector_space_router
@@ -26,6 +26,7 @@ async def lifespan(app: FastAPI):
     await preprocess_documents()
     await build_boolean_model()
     await build_vector_space_model()
+    await execute_singualar_value_decomposition()
 
     yield
 
