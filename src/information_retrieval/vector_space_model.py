@@ -7,7 +7,6 @@ import information_retrieval.globals
 import information_retrieval.linked_list
 import numpy as np
 
-
 async def search_vector_space_model(query: List[str]) -> List[int]: 
     """
     Creates the Queryvector and calculates the cosine similiarity between the Queryvector and the Documentvectors
@@ -79,6 +78,9 @@ async def build_vector_space_model():
         # matrix has now the dimension (524, 6643) => dokument to word if i want the word to ducment matrix i have to transpose the matrix
         information_retrieval.globals._document_term_weight_matrix.append(tfidf_vector)
         information_retrieval.globals._document_id_vector_map[post[0]] = tfidf_vector 
+    
+    singualar_value_decomposition() # Build the SVD matrix
+    
     print("Vector Space Model Built")
     return None
 
@@ -92,3 +94,37 @@ def compute_sublinear_tf_scaling(tf: int) -> float:
     if tf > 0:
         return 1 + math.log(tf) 
     return 0
+
+def singualar_value_decomposition():
+    """
+    Singular Value Decomposition
+    """
+    documents_vector_list = list(information_retrieval.globals._document_id_vector_map.items()) # get the list of documents and their vectors
+    vector_list = [vector for _, vector in documents_vector_list] # get the list of vectors
+    documentids_list = [doc_id for doc_id, _ in documents_vector_list] # get the list of document ids
+    original_matrix = np.matrix(vector_list) # create a matrix from the list of vectors
+    original_matrix = original_matrix.transpose() # transpose the matrix to get the word to document matrix
+    
+    U, S, Vt = np.linalg.svd(original_matrix)
+    
+    # get the number of values that represent 90% of the sum
+    sum_of_values = sum(S)    
+    threshold = sum_of_values * 0.9
+    current_sum = 0
+    for k, value in enumerate(S):
+        current_sum += value
+        if current_sum > threshold: # if the sum of the values is greater than the threshold, break
+            break
+            
+    # reduce the dimensionality of the matrix
+    information_retrieval.globals._U_reduced = U[:, :k]
+    information_retrieval.globals._S_reduced = S[:k]
+    Vt_reduced = Vt[:k, :]
+    information_retrieval.globals._V_reduced = Vt_reduced.transpose() # transpose the matrix to get the document to word matrix
+    
+    # assign reduced eigenvectors to documents    
+    i = 0
+    for doc_id in documentids_list:
+        vector = np.ravel(information_retrieval.globals._V_reduced[i,:]) # Get the ith row of the V_reduced matrix and convert it to a 1D array
+        information_retrieval.globals._document_svd_matrix[doc_id] = vector 
+        i += 1
