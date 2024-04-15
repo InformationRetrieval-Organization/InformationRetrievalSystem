@@ -9,7 +9,7 @@ from db.posts import get_all_posts
 import information_retrieval.globals 
 from nltk import FreqDist
 from datetime import datetime
-
+from config import MAX_DATA_COEFFICIENT
 
 async def preprocess_documents() -> list[str]:
     """
@@ -19,7 +19,6 @@ async def preprocess_documents() -> list[str]:
     list_of_tokens = []
     processed_posts = []
     term_freq_map = {}
-    MAX_COEFFICIENT = 2
         
     # Get the posts from the database
     posts = await get_all_posts()
@@ -64,7 +63,7 @@ async def preprocess_documents() -> list[str]:
         })
         
         # Calculate the date coefficient
-        information_retrieval.globals._date_coefficient[post[0]] = calculate_date_coefficient(post[3], MAX_COEFFICIENT)
+        information_retrieval.globals._date_coefficient[post[0]] = calculate_date_coefficient(post[3], MAX_DATA_COEFFICIENT)
         
         set_term_freq_map(term_freq_map, tokens)
         

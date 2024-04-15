@@ -22,6 +22,9 @@ INVERTED_INDEX_FILE_PATH = os.path.join(CWD, "files", "inverted_index.csv")
 EVAL_MEAS_FILE_PATH = os.path.join(CWD, "files", "evaluation_measures.png")
 EVAL_DATE_FILE_PATH = os.path.join(CWD, "files", "evaluation_temporal_relevance.png")
 
+NEW_COSINE = os.path.join(CWD, "files", "new_cosine.csv")
+OLD_COSINE = os.path.join(CWD, "files", "old_cosine.csv")
+
 # Crawl Dates
 try:
     GROUND_DATASET_START_DATE = datetime.combine(
@@ -37,3 +40,6 @@ except TypeError:
 
 # Flask Environment
 FLASK_ENV = os.getenv("FLASK_ENV")
+
+# Date Coefficient
+MAX_DATA_COEFFICIENT = 1.5
