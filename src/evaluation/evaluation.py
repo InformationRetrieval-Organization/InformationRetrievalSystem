@@ -17,8 +17,9 @@ from config import (
     GROUND_DATASET_START_DATE,
     GROUND_DATASET_END_DATE,
     GROUND_DATASET_FILE_PATH,
-    EVAL_MEAS_FILE_PATH,
-    EVAL_DATE_FILE_PATH,
+    EVAL_MEASURES_IMAGE_PATH,
+    EVAL_TEMP_RELEVANCE_IMAGE_PATH,
+    EVAL_MEASURES_CSV_PATH,
 )
 
 base_url = "http://127.0.0.1:8000"
@@ -185,7 +186,7 @@ def plot_evaluation_results(results: pd.DataFrame):
         ax.set_xticklabels(ax.get_xticklabels(), rotation=45, horizontalalignment='right')  # Adjust alignment
 
     plt.tight_layout()
-    plt.savefig(EVAL_MEAS_FILE_PATH)
+    plt.savefig(EVAL_MEASURES_IMAGE_PATH)
     plt.show()
 
 def plot_temporal_relevance(results: pd.DataFrame):
@@ -240,7 +241,7 @@ def plot_temporal_relevance(results: pd.DataFrame):
             fig.delaxes(axs.flatten()[j])
 
     plt.tight_layout()
-    plt.savefig(EVAL_DATE_FILE_PATH)
+    plt.savefig(EVAL_TEMP_RELEVANCE_IMAGE_PATH)
     plt.show()
 
 if __name__ == "__main__":
@@ -309,7 +310,7 @@ if __name__ == "__main__":
 
     df = pd.DataFrame(results)
     print(df)
-    print(df.describe())
+    df.describe().to_csv(EVAL_MEASURES_CSV_PATH)
 
     plot_evaluation_results(df)
     plot_temporal_relevance(df)
