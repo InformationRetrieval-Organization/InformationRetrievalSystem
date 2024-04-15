@@ -1,7 +1,5 @@
-# TODO: Implement SVD (single value decomposition) in the vector space model to handle synonyms f.e.
-# https://github.com/InformationRetrieval-Organization/InformationRetrievalSystem/issues/9
 import math
-from typing import List
+from typing import Any, List
 from db.processed_posts import get_all_processed_posts
 import information_retrieval.globals
 import information_retrieval.linked_list
@@ -30,25 +28,9 @@ async def search_vector_space_model(query: List[str]) -> List[int]:
     # creating the tfidf-query vector
     tfidf_vector = [compute_tf_idf_weighting(compute_sublinear_tf_scaling(query.count(term)), inverse_document_frequency[term]) for term in information_retrieval.globals._vocabulary]
 
-    # transpose tfidf vectorto calculate the new dimensional reduced query vector
-    square_s_reduced = np.diag(information_retrieval.globals._S_reduced)
-    # Check if the matrix is invertible
-    if np.linalg.det(square_s_reduced) == 0:
-        print("The matrix is singular and cannot be inverted.")
-    else:
-        # Calculate the inverse
-        s_k_inv = np.linalg.inv(square_s_reduced)
-    numpy_matrix_query = np.matrix(tfidf_vector)
-    print(numpy_matrix_query.shape)
-    print(information_retrieval.globals._U_reduced.shape)
-    print(s_k_inv.shape)
-    reduced_query_vector_U = np.dot(numpy_matrix_query, information_retrieval.globals._U_reduced)
-    reduced_query_vector = np.dot(reduced_query_vector_U, s_k_inv)
-    print(reduced_query_vector.shape)
-    transposed_query_vector = np.transpose(reduced_query_vector)
-    print(transposed_query_vector)
-    flat_transposed_query_vector = np.ravel(transposed_query_vector)
-    print(flat_transposed_query_vector)
+    flat_transposed_query_vector = calculate_dimension_reduced_query(tfidf_vector)
+
+    
     # Map each document by id to the corressponding cosinec similiarity
     doc_cosine_similiarity_map = {}
     for doc_id, vector in information_retrieval.globals._document_svd_matrix.items():
@@ -142,6 +124,33 @@ def compute_sublinear_tf_scaling(tf: int) -> float:
     if tf > 0:
         return 1 + math.log(tf) 
     return 0
+
+def calculate_dimension_reduced_query(tfidf_query_vector: List[float]) -> np.ndarray[Any]:
+    """
+    Calculate the dimension reduced query with the following formula: q = q^T * U_k * S_k^-1
+    """
+     # transpose tfidf vector to calculate the new dimensional reduced query vector
+    square_s_reduced = np.diag(information_retrieval.globals._S_reduced)
+    # Check if the matrix is invertible
+    if np.linalg.det(square_s_reduced) == 0:
+        print("The matrix is singular and cannot be inverted.")
+    else:
+        # Calculate the inverse
+        s_k_inv = np.linalg.inv(square_s_reduced)
+    
+    # convert the tfidf_vector to a numpy matrix shape = (k,1)
+    numpy_matrix_query = np.matrix(tfidf_query_vector)
+    
+    #calculate the new dimension reduced query with following formular q = q^T * U_k * S_k^-1
+    reduced_query_vector_U = np.dot(numpy_matrix_query, information_retrieval.globals._U_reduced)
+    reduced_query_vector = np.dot(reduced_query_vector_U, s_k_inv)
+
+    # reduced query has the shape of (1,k); in order to calculate the cosine similiarity we need to transpose the vector back in the shape (k,1)
+    transposed_query_vector = np.transpose(reduced_query_vector)
+    #convert reduced query vector to a matrix with shape (k,) numpy specific read numpy doc for specification
+    flat_transposed_query_vector = np.ravel(transposed_query_vector)
+
+    return flat_transposed_query_vector
 
 async def execute_singualar_value_decomposition():
     """
