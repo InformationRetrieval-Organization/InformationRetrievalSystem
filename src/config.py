@@ -23,8 +23,8 @@ EVAL_MEASURES_IMAGE_PATH = os.path.join(CWD, "files", "evaluation_measures.png")
 EVAL_TEMP_RELEVANCE_IMAGE_PATH = os.path.join(CWD, "files", "evaluation_temporal_relevance.png")
 EVAL_MEASURES_CSV_PATH = os.path.join(CWD, "files", "evaluation_measures.csv")
 
-NEW_COSINE = os.path.join(CWD, "files", "new_cosine.csv")
-OLD_COSINE = os.path.join(CWD, "files", "old_cosine.csv")
+SVD_COSINE_VALUES = os.path.join(CWD, "files", "svd_cosine_values.csv")
+NO_SVD_COSINE_VALUES = os.path.join(CWD, "files", "no_svd_cosine_values.csv")
 
 # Crawl Dates
 try:
@@ -43,4 +43,4 @@ except TypeError:
 FLASK_ENV = os.getenv("FLASK_ENV")
 
 # Date Coefficient
-MAX_DATA_COEFFICIENT = 1.5
+MAX_DATA_COEFFICIENT = 2.0

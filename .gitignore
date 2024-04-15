@@ -161,3 +161,7 @@ cython_debug/
 
 # inverted_index.csv
 inverted_index.csv
+
+# cosine csv_files
+svd_cosine_values.csv
+no_svd_cosine_values.csv
