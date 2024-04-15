@@ -27,15 +27,34 @@ async def search_vector_space_model(query: List[str]) -> List[int]:
  
     # creating the tfidf-query vector
     tfidf_vector = [compute_tf_idf_weighting(compute_sublinear_tf_scaling(query.count(term)), inverse_document_frequency[term]) for term in information_retrieval.globals._vocabulary]
-    # Map each document by id to the corressponding cosine similiarity
-    doc_cosine_similiarity_map = {}
 
-    for doc_id, vector in information_retrieval.globals._document_id_vector_map.items():
+    # transpose tfidf vectorto calculate the new dimensional reduced query vector
+    square_s_reduced = np.diag(information_retrieval.globals._S_reduced)
+    # Check if the matrix is invertible
+    if np.linalg.det(square_s_reduced) == 0:
+        print("The matrix is singular and cannot be inverted.")
+    else:
+        # Calculate the inverse
+        s_k_inv = np.linalg.inv(square_s_reduced)
+    numpy_matrix_query = np.matrix(tfidf_vector)
+    print(numpy_matrix_query.shape)
+    print(information_retrieval.globals._U_reduced.shape)
+    print(s_k_inv.shape)
+    reduced_query_vector_U = np.dot(numpy_matrix_query, information_retrieval.globals._U_reduced)
+    reduced_query_vector = np.dot(reduced_query_vector_U, s_k_inv)
+    print(reduced_query_vector.shape)
+    transposed_query_vector = np.transpose(reduced_query_vector)
+    print(transposed_query_vector)
+    flat_transposed_query_vector = np.ravel(transposed_query_vector)
+    print(flat_transposed_query_vector)
+    # Map each document by id to the corressponding cosinec similiarity
+    doc_cosine_similiarity_map = {}
+    for doc_id, vector in information_retrieval.globals._document_svd_matrix.items():
         # Calculate the Cosine similiarity by using the numpy library
         # Calculating the dot product between the Queryvector and the Documentvector
-        dot_product = np.dot(tfidf_vector, vector)
+        dot_product = np.dot(flat_transposed_query_vector, vector)
         # Calculate the norms for the Queryvector and the Documentvector
-        magnitude_query = np.linalg.norm(tfidf_vector)
+        magnitude_query = np.linalg.norm(flat_transposed_query_vector)
         magnitude_entry = np.linalg.norm(vector)
         # Calculating the Cosine similiarity
         cosine_similarity = dot_product / (magnitude_query * magnitude_entry)
@@ -117,6 +136,7 @@ def singualar_value_decomposition():
             break
             
     # reduce the dimensionality of the matrix
+    print(k)
     information_retrieval.globals._U_reduced = U[:, :k]
     information_retrieval.globals._S_reduced = S[:k]
     Vt_reduced = Vt[:k, :]
