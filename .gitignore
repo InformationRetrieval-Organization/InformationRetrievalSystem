@@ -159,9 +159,10 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
-# inverted_index.csv
+# files
 inverted_index.csv
-
-# cosine csv_files
 svd_cosine_values.csv
 no_svd_cosine_values.csv
+evaluation_measures.csv
+evaluation_measures.png
+evaluation_temporal_relevance.png
