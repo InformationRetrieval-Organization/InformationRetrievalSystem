@@ -1,6 +1,7 @@
 prisma
 fastapi
-uvicorn[standard]
+uvicorn
+gunicorn
 scikit-learn
 nltk
 bs4

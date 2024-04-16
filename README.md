@@ -55,9 +55,14 @@ Connection tab requires to type:
 4) Password: postgres
 
 ## optional: azure deployment
-this is the startup command;
+
+startup command (azure needs gunicorn)
 ```bash
-prisma db push && uvicorn --app-dir src main:app --host 0.0.0.0 --port 8000
+prisma db push && gunicorn --pythonpath src main:app --bind "0.0.0.0:3100" --worker-class "uvicorn.workers.UvicornWorker"
+```
+```bash
+docker build --tag informationretrieval-api .
+docker run --detach --publish 3100:3100 informationretrieval-api
 ```
 
 ## optional: swagger
