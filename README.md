@@ -54,16 +54,31 @@ Connection tab requires to type:
 3) Username: postgres
 4) Password: postgres
 
+## optional: swagger
+Open `http://localhost:8000/docs` to see the swagger UI
+
+## optional: Docker
+building
+```bash
+docker build --tag tonylukeregistry.azurecr.io/information-retrieval/api:latest .
+```
+
+running container locally
+```bash
+docker run --detach --publish 3100:3100 tonylukeregistry.azurecr.io/information-retrieval/api:latest
+```
+
+
 ## optional: azure deployment
+change connection string;
+```bash
+postgresql://<dbuser>:<dbpassword>@<dbservername>.postgres.database.azure.com:<port>/<bdname>?schema=public&sslmode=require
+```
 
 startup command (azure needs gunicorn)
 ```bash
 prisma db push && gunicorn --pythonpath src main:app --bind "0.0.0.0:3100" --worker-class "uvicorn.workers.UvicornWorker"
 ```
-```bash
-docker build --tag informationretrieval-api .
-docker run --detach --publish 3100:3100 informationretrieval-api
-```
 
-## optional: swagger
-Open `http://localhost:8000/docs` to see the swagger UI
+
+

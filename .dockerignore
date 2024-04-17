@@ -1,3 +1,14 @@
 .git*
 **/*.pyc
+.vscode/
 .venv/
+Dockerfile
+.dockerignore
+README.md
+.env.sample
+files/inverted_index.csv
+files/svd_cosine_values.csv
+files/no_svd_cosine_values.csv
+files/evaluation_measures.csv
+files/evaluation_measures.png
+files/evaluation_temporal_relevance.png

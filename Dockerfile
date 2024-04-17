@@ -12,4 +12,4 @@ COPY . .
 
 EXPOSE 3100
 
-CMD sh -c 'prisma db push && gunicorn --pythonpath src main:app --bind "0.0.0.0:3100" --worker-class "uvicorn.workers.UvicornWorker"'
+CMD ["/bin/bash", "-c", "prisma db push; gunicorn --pythonpath src main:app --bind 0.0.0.0:3100 --workers 1 --worker-class uvicorn.workers.UvicornWorker"]
