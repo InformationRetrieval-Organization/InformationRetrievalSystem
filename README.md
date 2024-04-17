@@ -60,12 +60,12 @@ Open `http://localhost:8000/docs` to see the swagger UI
 ## optional: Docker
 building
 ```bash
-docker build --tag tonylukeregistry.azurecr.io/information-retrieval/api:latest .
+docker build --tag tonylukeregistry.azurecr.io/tonylukeregistry/information-retrieval/api:latest .
 ```
 
 running container locally
 ```bash
-docker run --detach --publish 3100:3100 tonylukeregistry.azurecr.io/information-retrieval/api:latest
+docker run --detach --publish 3100:3100 tonylukeregistry.azurecr.io/tonylukeregistry/information-retrieval/api:latest
 ```
 
 
