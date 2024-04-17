@@ -40,7 +40,7 @@ except TypeError:
     sys.exit(1)
 
 # Flask Environment
-FLASK_ENV = os.getenv("FLASK_ENV")
+FASTAPI_ENV = os.getenv("FASTAPI_ENV")
 
 # Date Coefficient
 MAX_DATA_COEFFICIENT = 2.0

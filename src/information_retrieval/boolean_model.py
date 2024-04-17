@@ -1,4 +1,3 @@
-# https://github.com/InformationRetrieval-Organization/InformationRetrievalSystem/issues/3
 from sklearn.feature_extraction.text import TfidfVectorizer
 from db.processed_posts import get_all_processed_posts 
 from information_retrieval.linked_list import LinkedList
@@ -6,7 +5,7 @@ import information_retrieval.globals
 import pandas as pd
 import os
 from config import INVERTED_INDEX_FILE_PATH
-from config import FLASK_ENV
+from config import FASTAPI_ENV
 
 async def build_boolean_model():
     """
@@ -82,7 +81,7 @@ def _not_processing(word, id_set):
     return id_set
 
 def create_csv():
-    if FLASK_ENV != "development": # only create the csv file in development mode
+    if FASTAPI_ENV != "development": # only create the csv file in development mode
         return
     
     data = []
