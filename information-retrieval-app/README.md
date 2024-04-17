@@ -33,3 +33,14 @@ npm run build
 npm run start
 ```
 deployment on azure over vscode azure app service extension
+
+## optional: Docker
+building
+```bash
+docker build --tag tonylukeregistry.azurecr.io/information-retrieval/ui:latest .
+```
+
+running container locally
+```bash
+docker run --detach --publish 3000:3000 tonylukeregistry.azurecr.io/information-retrieval/ui:latest
+```
