@@ -4,6 +4,7 @@ from pydantic import BaseModel
 import nltk
 from information_retrieval.boolean_model import search_boolean_model
 from db.posts import get_all_posts
+from prisma import models
 
 router = APIRouter()
 
@@ -11,8 +12,13 @@ class Item(BaseModel):
     operator: str
     value: str
 
-@router.post("/search/boolean")
-async def search_boolean(items: List[Item]):
+@router.post(
+    "/search/boolean",
+    responses={
+        429: {"description": "Too Many Requests"},
+    },
+)
+async def search_boolean(items: List[Item]) -> List[models.Post]:
     """
     Search the Boolean Model for the given query.<br>
     Example usage: http://127.0.0.1:8000/search/boolean

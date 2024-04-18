@@ -3,11 +3,17 @@ from typing import List
 import nltk
 from information_retrieval.vector_space_model import search_vector_space_model
 from db.posts import get_all_posts
+from prisma import models
 
 router = APIRouter()
 
-@router.get("/search/vector-space")
-async def search_vector_space(q: str):
+@router.get(
+    "/search/vector-space",
+    responses={
+        429: {"description": "Too Many Requests"},
+    },
+)
+async def search_vector_space(q: str) -> List[models.Post]:
     """
     Search the Vector Space Model for the given query.<br>
     Example usage: http://127.0.0.1:8000/search/vector-space?q=your_search_term
