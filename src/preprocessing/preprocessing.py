@@ -135,6 +135,9 @@ async def calculate_date_coefficients_and_vocabulary(
 def preprocess_post(
     post: models.Post, english_words: Set[str]
 ) -> Tuple[models.Processed_Post, List[str]]:
+    """
+    Preprocess a post.
+    """
     # Remove special characters and convert to lowercase
     content = post.title.lower() + " " + post.content.lower()  # Add the title
     content = re.sub("[–!\"#$%&'()*+,-./:;<=‘>—?@[\]^_`�{|}~\n’“”]", "", content)
