@@ -120,7 +120,7 @@ async def calculate_date_coefficients_and_vocabulary(
             )
 
             # Tokenize the processed post content
-            tokens = word_tokenize(processed_post.content)
+            tokens = processed_post.content.split()
 
             set_term_freq_map(term_freq_map, tokens)
 
