@@ -11,25 +11,46 @@ from config import MAX_DATA_COEFFICIENT
 from prisma import models
 
 
-async def preprocess_documents() -> Tuple[List[Dict[str, str]], List[str]]:
+async def preprocess_documents():
     """
     Preprocesses the documents in the database and returns a list of tokens.
     """
+    print("Start Preprocessing")
+
     # Get the posts and processed posts from the database
     posts = await get_all_posts()
     processed_posts = await get_all_processed_posts()
 
-    # If there are no processed posts in the database, preprocess the posts
     if not processed_posts:
+        # Preprocess the posts
+        print("no prepocessed posts in database, start preprocessing")
         processed_posts, list_of_tokens = await preprocess_and_insert_posts(posts)
     else:
+        # already preprocessed
+        print("found preprocessed posts in database")
         list_of_tokens = await calculate_date_coefficients_and_vocabulary(
             processed_posts, posts
         )
 
-    # Set the global vocabulary
     information_retrieval.globals._vocabulary = list_of_tokens
 
+    print(str(len(processed_posts)) + " posts came trough the preprocessing")
+    print("Length of Vocabulary: " + str(len(list_of_tokens)))
+    print("Preprocessing completed")
+    
+
+def handle_tokens(term_freq_map: Dict[str, int], tokens: List[str]) -> List[str]:
+    """
+    Handle tokens: update term frequency map and filter out unique tokens.
+    """
+    # Find tokens that occur only once
+    unique_tokens = [key for key, value in term_freq_map.items() if value == 1]
+    tokens = [token for token in tokens if token not in unique_tokens]
+
+    # Remove duplicates
+    tokens = list(set(tokens))
+
+    return tokens
 
 async def preprocess_and_insert_posts(posts: List[models.Post]) -> Tuple[List[models.Processed_Post], List[str]]:
     """
@@ -52,6 +73,9 @@ async def preprocess_and_insert_posts(posts: List[models.Post]) -> Tuple[List[mo
         # Preprocess the post
         processed_post, tokens = preprocess_post(post, english_words)
 
+        if not processed_post:
+            continue
+
         # Add to processed_posts list
         processed_posts.append(processed_post)
 
@@ -63,18 +87,12 @@ async def preprocess_and_insert_posts(posts: List[models.Post]) -> Tuple[List[mo
         set_term_freq_map(term_freq_map, tokens)
 
         list_of_tokens.extend(tokens)
+    
+    list_of_tokens = handle_tokens(term_freq_map, list_of_tokens)
 
-    # Find tokens that occur only once
-    unique_tokens = [key for key, value in term_freq_map.items() if value == 1]
-    list_of_tokens = [token for token in list_of_tokens if token not in unique_tokens]
-
-    # remove duplicates
-    processed_posts = list({post["content"]: post for post in processed_posts}.values())
-
-    list_of_tokens = list(set(list_of_tokens))
-
-    # Insert the processed posts into the database
-    await insert_documents(processed_posts, list_of_tokens)
+    # database
+    processed_posts_data = [post.dict() for post in processed_posts] # convert from List[Processed_Post] to List[Dict]
+    await create_many_processed_posts(processed_posts_data) # Insert the processed posts into the database
 
     return processed_posts, list_of_tokens
 
@@ -85,8 +103,8 @@ async def calculate_date_coefficients_and_vocabulary(
     """
     Calculates the date coefficients and vocabulary for the processed posts.
     """
-    # Initialize the list of tokens
     list_of_tokens = []
+    term_freq_map = {}
 
     # Create a dictionary mapping post IDs to posts for quick lookup
     posts_dict = {post.id: post for post in posts}
@@ -104,11 +122,12 @@ async def calculate_date_coefficients_and_vocabulary(
             # Tokenize the processed post content
             tokens = word_tokenize(processed_post.content)
 
+            set_term_freq_map(term_freq_map, tokens)
+
             # Add the tokens to the list of tokens
             list_of_tokens.extend(tokens)
-
-    # Remove duplicates
-    list_of_tokens = list(set(list_of_tokens))
+        
+    list_of_tokens = handle_tokens(term_freq_map, list_of_tokens)
 
     return list_of_tokens
 
@@ -117,7 +136,7 @@ def preprocess_post(
     post: models.Post, english_words: Set[str]
 ) -> Tuple[models.Processed_Post, List[str]]:
     # Remove special characters and convert to lowercase
-    content = post[1].lower() + " " + post[2].lower()  # Add the title
+    content = post.title.lower() + " " + post.content.lower()  # Add the title
     content = re.sub("[–!\"#$%&'()*+,-./:;<=‘>—?@[\]^_`�{|}~\n’“”]", "", content)
 
     # Remove posts with a low english word ratio
@@ -144,25 +163,9 @@ def preprocess_post(
     tokens = [lemmatizer.lemmatize(token) for token in tokens]
 
     # Create the processed post
-    processed_post = models.Processed_Post()
-    processed_post.id = 1
-    processed_post.content = " ".join(tokens)
+    processed_post = models.Processed_Post(id=post.id, content=" ".join(tokens))
 
     return processed_post, tokens
-
-
-async def insert_documents(
-    processed_posts: List[Dict[str, str]], list_of_tokens: List[str]
-):
-    """
-    Inserts the processed posts into the database and sets the global variables.
-    """
-    # Create DB entries
-    await create_many_processed_posts(processed_posts)
-
-    information_retrieval.globals._vocabulary = list_of_tokens
-
-    print("Length of Vocabulary: " + str(len(list_of_tokens)))
 
 
 def set_term_freq_map(term_freq_map: Dict[str, int], tokens: List[str]) -> None:
