@@ -15,7 +15,7 @@ async def init_database():
     # Get all posts from the database
     posts = await get_all_posts()
 
-    print(f"Initial length of posts in databse: {len(posts)}")
+    print(f"Initial length of posts in database: {len(posts)}")
 
     # If there are no posts in the database, delete and insert posts
     if not posts:
