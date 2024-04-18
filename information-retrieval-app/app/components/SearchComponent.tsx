@@ -10,8 +10,11 @@ const SearchComponent = ({ searchType }: { searchType: string }) => {
     const [inputValue, setInputValue] = useState("");
     const [results, setResults] = useState<ArticleResult[]>([]);
     const [filters, setFilters] = useState<Filter[]>([{ operator: "AND", value: "" }]);
+    const [isLoading, setIsLoading] = useState(false);
 
     const fetchData = async () => {
+        setIsLoading(true);
+
         try {
             let url = '';
             let data: ArticleResult[] = [];
@@ -28,6 +31,8 @@ const SearchComponent = ({ searchType }: { searchType: string }) => {
             setResults(data);
         } catch (error) {
             console.error("Failed to fetch data:", error);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -42,7 +47,7 @@ const SearchComponent = ({ searchType }: { searchType: string }) => {
                     type="search"
                 />
 
-                <Button isIconOnly color="primary" variant="solid" size="lg" onClick={fetchData}>
+                <Button isIconOnly color="primary" variant="solid" size="lg" onClick={fetchData} isLoading={isLoading}>
                     <SearchIcon size={18} />
                 </Button>
             </div>
