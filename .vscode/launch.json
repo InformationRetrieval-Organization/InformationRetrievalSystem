@@ -1,7 +1,7 @@
 {
     "configurations": [
         {
-            "name": "Python Debugger: Flask Script",
+            "name": "Python Debugger: FastAPI Script",
             "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/src/main.py",
