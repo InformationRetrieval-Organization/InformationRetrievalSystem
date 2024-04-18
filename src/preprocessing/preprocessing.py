@@ -1,90 +1,175 @@
 import re
-from typing import Dict, List, Set
+from typing import Dict, List, Set, Tuple
 import nltk
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
-from nltk.stem import PorterStemmer
-from db.processed_posts import create_one_processed_post, create_many_processed_posts
+from db.processed_posts import create_many_processed_posts, get_all_processed_posts
 from db.posts import get_all_posts
-import information_retrieval.globals 
-from nltk import FreqDist
+import information_retrieval.globals
 from datetime import datetime
 from config import MAX_DATA_COEFFICIENT
+from prisma import models
 
-async def preprocess_documents() -> list[str]:
+
+async def preprocess_documents():
     """
     Preprocesses the documents in the database and returns a list of tokens.
+    """
+    print("Start Preprocessing")
+
+    # Get the posts and processed posts from the database
+    posts = await get_all_posts()
+    processed_posts = await get_all_processed_posts()
+
+    if not processed_posts:
+        # Preprocess the posts
+        print("no prepocessed posts in database, start preprocessing")
+        processed_posts, list_of_tokens = await preprocess_and_insert_posts(posts)
+    else:
+        # already preprocessed
+        print("found preprocessed posts in database")
+        list_of_tokens = await calculate_date_coefficients_and_vocabulary(
+            processed_posts, posts
+        )
+
+    information_retrieval.globals._vocabulary = list_of_tokens
+
+    print(str(len(processed_posts)) + " posts came trough the preprocessing")
+    print("Length of Vocabulary: " + str(len(list_of_tokens)))
+    print("Preprocessing completed")
+    
+
+def handle_tokens(term_freq_map: Dict[str, int], tokens: List[str]) -> List[str]:
+    """
+    Handle tokens: update term frequency map and filter out unique tokens.
+    """
+    # Find tokens that occur only once
+    unique_tokens = [key for key, value in term_freq_map.items() if value == 1]
+    tokens = [token for token in tokens if token not in unique_tokens]
+
+    # Remove duplicates
+    tokens = list(set(tokens))
+
+    return tokens
+
+async def preprocess_and_insert_posts(posts: List[models.Post]) -> Tuple[List[models.Processed_Post], List[str]]:
+    """
+    Preprocesses the posts and inserts them into the database.
     """
     # Initialize the variables
     list_of_tokens = []
     processed_posts = []
     term_freq_map = {}
-        
-    # Get the posts from the database
-    posts = await get_all_posts()
-    posts = [(post.id, post.content, post.title, post.published_on) for post in posts]
-    
+
     # Download the necessary resources
-    nltk.download('punkt')
-    nltk.download('wordnet')
-    nltk.download('stopwords')
-    nltk.download('words')
+    nltk.download("punkt")
+    nltk.download("wordnet")
+    nltk.download("stopwords")
+    nltk.download("words")
     english_words = set(nltk.corpus.words.words())
-    english_words.add('korea')
+    english_words.add("korea")
 
-    for post in posts:        
-        # Remove special characters and convert to lowercase
-        content = post[1].lower() + " " + post[2].lower() # Add the title
-        content = re.sub('[–!\"#$%&\'()*+,-./:;<=‘>—?@[\]^_`�{|}~\n’“”]', '', content)
-                        
-        # Remove posts with a low english word ratio
-        threshold = 0.7
-        if not is_english(content, threshold, english_words):
+    for post in posts:
+        # Preprocess the post
+        processed_post, tokens = preprocess_post(post, english_words)
+
+        if not processed_post:
             continue
-    
-        # Remove non-english words
-        content = " ".join(w for w in nltk.wordpunct_tokenize(content) if w.lower() in english_words or not w.isalpha())
-        
-        # Tokenize the document
-        tokens = word_tokenize(content)
-
-        # Remove stopwords
-        stop_words = set(stopwords.words('english'))
-        tokens = [token for token in tokens if token not in stop_words]        
-        
-        # Lemmatize the tokens
-        lemmatizer = nltk.stem.WordNetLemmatizer()
-        tokens = [lemmatizer.lemmatize(token) for token in tokens]
 
         # Add to processed_posts list
-        processed_posts.append({
-            "id": post[0],
-            "content": ' '.join(tokens)
-        })
-        
+        processed_posts.append(processed_post)
+
         # Calculate the date coefficient
-        information_retrieval.globals._date_coefficient[post[0]] = calculate_date_coefficient(post[3], MAX_DATA_COEFFICIENT)
-        
+        information_retrieval.globals._date_coefficient[post.id] = (
+            calculate_date_coefficient(post.published_on, MAX_DATA_COEFFICIENT)
+        )
+
         set_term_freq_map(term_freq_map, tokens)
-        
+
         list_of_tokens.extend(tokens)
     
-    # Find tokens that occur only once
-    unique_tokens = [key for key, value in term_freq_map.items() if value == 1]
-    list_of_tokens = [token for token in list_of_tokens if token not in unique_tokens]
-    
-    # remove duplicates
-    processed_posts = list({post['content']: post for post in processed_posts}.values())
-                
-    # Create DB entries
-    await create_many_processed_posts(processed_posts)
+    list_of_tokens = handle_tokens(term_freq_map, list_of_tokens)
 
-    list_of_tokens = list(set(list_of_tokens))
-    information_retrieval.globals._vocabulary = list_of_tokens
-    
-    print("Length of Vocabulary: " + str(len(list_of_tokens)))
-    
+    # database
+    processed_posts_data = [post.dict() for post in processed_posts] # convert from List[Processed_Post] to List[Dict]
+    await create_many_processed_posts(processed_posts_data) # Insert the processed posts into the database
+
+    return processed_posts, list_of_tokens
+
+
+async def calculate_date_coefficients_and_vocabulary(
+    processed_posts: List[models.Processed_Post], posts: List[models.Post]
+) -> List[str]:
+    """
+    Calculates the date coefficients and vocabulary for the processed posts.
+    """
+    list_of_tokens = []
+    term_freq_map = {}
+
+    # Create a dictionary mapping post IDs to posts for quick lookup
+    posts_dict = {post.id: post for post in posts}
+
+    for processed_post in processed_posts:
+        # Find the corresponding post
+        post = posts_dict.get(processed_post.id)
+
+        if post:
+            # Calculate the date coefficient
+            information_retrieval.globals._date_coefficient[processed_post.id] = (
+                calculate_date_coefficient(post.published_on, MAX_DATA_COEFFICIENT)
+            )
+
+            # Tokenize the processed post content
+            tokens = processed_post.content.split()
+
+            set_term_freq_map(term_freq_map, tokens)
+
+            # Add the tokens to the list of tokens
+            list_of_tokens.extend(tokens)
+        
+    list_of_tokens = handle_tokens(term_freq_map, list_of_tokens)
+
     return list_of_tokens
+
+
+def preprocess_post(
+    post: models.Post, english_words: Set[str]
+) -> Tuple[models.Processed_Post, List[str]]:
+    """
+    Preprocess a post.
+    """
+    # Remove special characters and convert to lowercase
+    content = post.title.lower() + " " + post.content.lower()  # Add the title
+    content = re.sub("[–!\"#$%&'()*+,-./:;<=‘>—?@[\]^_`�{|}~\n’“”]", "", content)
+
+    # Remove posts with a low english word ratio
+    threshold = 0.7
+    if not is_english(content, threshold, english_words):
+        return None, []
+
+    # Remove non-english words
+    content = " ".join(
+        w
+        for w in nltk.wordpunct_tokenize(content)
+        if w.lower() in english_words or not w.isalpha()
+    )
+
+    # Tokenize the document
+    tokens = word_tokenize(content)
+
+    # Remove stopwords
+    stop_words = set(stopwords.words("english"))
+    tokens = [token for token in tokens if token not in stop_words]
+
+    # Lemmatize the tokens
+    lemmatizer = nltk.stem.WordNetLemmatizer()
+    tokens = [lemmatizer.lemmatize(token) for token in tokens]
+
+    # Create the processed post
+    processed_post = models.Processed_Post(id=post.id, content=" ".join(tokens))
+
+    return processed_post, tokens
+
 
 def set_term_freq_map(term_freq_map: Dict[str, int], tokens: List[str]) -> None:
     """
@@ -96,17 +181,19 @@ def set_term_freq_map(term_freq_map: Dict[str, int], tokens: List[str]) -> None:
         else:
             term_freq_map[token] = 1
 
+
 def is_english(content: str, threshold: float, english_words: Set[str]) -> bool:
     """
     Determine if a document is in English based on the ratio of English words.
     """
     english_words_count = sum(1 for word in content.split() if word in english_words)
     total_words_count = len(content.split())
-    
-    if total_words_count == 0 or english_words_count == 0: # Avoid division by zero
+
+    if total_words_count == 0 or english_words_count == 0:  # Avoid division by zero
         return False
-    
+
     return english_words_count / total_words_count >= threshold
+
 
 def calculate_date_coefficient(post_date: datetime, max_coefficient: int) -> int:
     """
@@ -116,10 +203,10 @@ def calculate_date_coefficient(post_date: datetime, max_coefficient: int) -> int
     newest_date = datetime(2024, 4, 12)
     days_between = (newest_date - oldest_date).days
     coefficient_per_day = (max_coefficient - 1) / days_between
-    
-    post_date = post_date.replace(tzinfo=None) # Remove timezone info, otherwise the subtraction will fail
-    
+
+    post_date = post_date.replace(
+        tzinfo=None
+    )  # Remove timezone info, otherwise the subtraction will fail
+
     days_since_oldest = (post_date - oldest_date).days
     return coefficient_per_day * days_since_oldest + 1
-
-    
