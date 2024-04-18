@@ -6,7 +6,7 @@ from preprocessing.preprocessing import preprocess_documents
 from api.vector_space_api import router as vector_space_router
 from api.boolean_api import router as boolean_router
 from db.helper import init_database
-from information_retrieval.globals import init
+from information_retrieval.globals import init_globals
 from fastapi.middleware.cors import CORSMiddleware
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
@@ -22,7 +22,7 @@ async def lifespan(app: FastAPI):
 
     await init_database()
 
-    init()
+    init_globals()
     await preprocess_documents()
     await build_boolean_model()
     await build_vector_space_model()

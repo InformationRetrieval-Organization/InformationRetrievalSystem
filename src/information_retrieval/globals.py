@@ -1,4 +1,4 @@
-def init():
+def init_globals():
     """
     Initialize the global variables
     """
