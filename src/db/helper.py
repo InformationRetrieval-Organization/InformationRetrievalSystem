@@ -1,5 +1,5 @@
 import pandas as pd
-from db.posts import create_many_posts, delete_all_posts
+from db.posts import create_many_posts, delete_all_posts, get_all_posts
 from db.processed_posts import delete_all_processed_posts
 import os
 from dateutil.parser import parse
@@ -12,9 +12,14 @@ async def init_database():
     Initialize the database by deleting the existing posts and processed_posts and inserting the articles from the files into the database
     """
 
-    await delete_all_posts()
-    await delete_all_processed_posts()
-    await insert_file_posts()
+    # Get all posts from the database
+    posts = await get_all_posts()
+
+    # If there are no posts in the database, delete and insert posts
+    if not posts:
+        await delete_all_posts()
+        await delete_all_processed_posts()
+        await insert_file_posts()
 
 
 async def insert_file_posts():
