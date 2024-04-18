@@ -10,5 +10,4 @@ COPY . .
 
 EXPOSE 3100
 
-# 600s startup time for database actions
-CMD ["/bin/bash", "-c", "prisma db push; gunicorn --pythonpath src main:app --bind 0.0.0.0:3100 --workers 1 --worker-class uvicorn.workers.UvicornWorker --timeout 600"]
+CMD ["/bin/bash", "-c", "prisma generate; gunicorn main:app -c gunicorn.conf.py"]

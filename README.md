@@ -75,10 +75,5 @@ change connection string;
 postgresql://<dbuser>:<dbpassword>@<dbservername>.postgres.database.azure.com:<port>/<bdname>?schema=public&sslmode=require
 ```
 
-startup command (azure needs gunicorn)
-```bash
-prisma db push && gunicorn --pythonpath src main:app --bind "0.0.0.0:3100" --worker-class "uvicorn.workers.UvicornWorker"
-```
-
 
 
