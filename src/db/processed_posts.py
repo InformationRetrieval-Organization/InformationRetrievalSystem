@@ -1,8 +1,13 @@
 from datetime import datetime
 from typing import Dict, List, Union
 from prisma import models, Prisma
+from aiocache import cached, SimpleMemoryCache
+from aiocache.serializers import PickleSerializer
 
 
+cache = SimpleMemoryCache()
+
+@cached(ttl=None, cache=SimpleMemoryCache, serializer=PickleSerializer(), key="get_all_processed_posts")
 async def get_all_processed_posts() -> List[models.Processed_Post]:
     """
     Fetch all processed_posts from the database
@@ -21,7 +26,12 @@ async def create_one_processed_post(id: int, content: str) -> models.Processed_P
     """
     try:
         async with Prisma() as db:
-            return await db.processed_post.create(data={"id": id, "content": content})
+            processed_post = await db.processed_post.create(data={"id": id, "content": content})
+        
+            # invalidate the cache
+            await cache.delete('get_all_processed_posts')
+
+            return processed_post
     except Exception as e:
         print(f"An error occurred while creating the processed_post: {e}")
 
@@ -34,7 +44,12 @@ async def create_many_processed_posts(
     """
     try:
         async with Prisma() as db:
-            return await db.processed_post.create_many(data=processed_posts)
+            result = await db.processed_post.create_many(data=processed_posts)
+            
+            # invalidate the cache
+            await cache.delete('get_all_processed_posts')
+
+            return result
     except Exception as e:
         print(f"An error occurred while creating the processed_posts: {e}")
 

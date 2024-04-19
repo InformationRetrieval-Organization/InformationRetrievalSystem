@@ -11,3 +11,4 @@ marshmallow
 numpy
 matplotlib
 slowapi
+aiocache
