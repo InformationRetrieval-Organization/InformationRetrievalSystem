@@ -4,8 +4,6 @@ from db.processed_posts import get_all_processed_posts
 import information_retrieval.globals
 import information_retrieval.linked_list
 import numpy as np
-import pandas as pd
-from config import SVD_COSINE_VALUES, NO_SVD_COSINE_VALUES
 
 async def search_vector_space_model(query: List[str]) -> List[int]: 
     """
@@ -51,33 +49,6 @@ async def search_vector_space_model(query: List[str]) -> List[int]:
     # Extract the sorted document IDs into a list
     # In this contex "_" is a placeholder, we are not interested in it so we use this convention
     sorted_doc_ids = [doc_id for doc_id, _ in sorted_docs if _ > 0.0]
-    
-    # Comparing CSV files with the new and old cosine values
-    
-    doc_cosine_similiarity_map_old = {}
-    for doc_id, vector in information_retrieval.globals._document_id_vector_map.items():
-        # Calculate the Cosine similiarity by using the numpy library
-        # Calculating the dot product between the Queryvector and the Documentvector
-        dot_product = np.dot(tfidf_vector, vector)
-        # Calculate the norms for the Queryvector and the Documentvector
-        magnitude_query = np.linalg.norm(tfidf_vector)
-        magnitude_entry = np.linalg.norm(vector)
-        # Calculating the Cosine similiarity
-        cosine_similarity = dot_product / (magnitude_query * magnitude_entry)
-        # multiply cosine similarity with the date coefficient
-        cosine_similarity *= information_retrieval.globals._date_coefficient[doc_id]
-        # Adding the Results to the map created before
-        doc_cosine_similiarity_map_old[doc_id] = cosine_similarity 
-    
-    # Sort the map by the highest cosine similiarity, lambda takes the second index in the tuple and used these to sort
-    sorted_cosine_old = sorted(doc_cosine_similiarity_map_old.items(), key=lambda x: x[1], reverse=True)
-    sorted_cosine_new = sorted(doc_cosine_similiarity_map.items(), key=lambda x: x[1], reverse=True)
-    
-    # Export the sorted cosine values to a CSV file
-    df_new = pd.DataFrame(sorted_cosine_new, columns=['Document ID', 'Cosine Similarity'])
-    df_old = pd.DataFrame(sorted_cosine_old, columns=['Document ID', 'Cosine Similarity'])
-    df_new.to_csv(SVD_COSINE_VALUES, index=False)
-    df_old.to_csv(NO_SVD_COSINE_VALUES, index=False)
     
     return sorted_doc_ids
 
