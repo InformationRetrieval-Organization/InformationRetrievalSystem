@@ -17,6 +17,8 @@ async def preprocess_documents():
     """
     print("Start Preprocessing")
 
+    download_nltk_resources()
+
     # Get the posts and processed posts from the database
     posts = await get_all_posts()
     processed_posts = await get_all_processed_posts()
@@ -38,6 +40,14 @@ async def preprocess_documents():
     print("Length of Vocabulary: " + str(len(list_of_tokens)))
     print("Preprocessing completed")
     
+def download_nltk_resources():
+    """
+    Download the necessary NLTK resources.
+    """
+    nltk.download("punkt")
+    nltk.download("wordnet")
+    nltk.download("stopwords")
+    nltk.download("words")
 
 def handle_tokens(term_freq_map: Dict[str, int], tokens: List[str]) -> List[str]:
     """
@@ -61,11 +71,6 @@ async def preprocess_and_insert_posts(posts: List[models.Post]) -> Tuple[List[mo
     processed_posts = []
     term_freq_map = {}
 
-    # Download the necessary resources
-    nltk.download("punkt")
-    nltk.download("wordnet")
-    nltk.download("stopwords")
-    nltk.download("words")
     english_words = set(nltk.corpus.words.words())
     english_words.add("korea")
 
