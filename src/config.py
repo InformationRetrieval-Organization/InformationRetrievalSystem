@@ -24,17 +24,23 @@ EVAL_TEMP_RELEVANCE_IMAGE_PATH = os.path.join(CWD, "files", "evaluation_temporal
 EVAL_MEASURES_CSV_PATH = os.path.join(CWD, "files", "evaluation_measures.csv")
 
 # Crawl Dates
+GROUND_DATASET_START_DATE = None
+GROUND_DATASET_END_DATE = None
+
 try:
-    GROUND_DATASET_START_DATE = datetime.combine(
-        datetime.strptime(os.getenv("GROUND_DATASET_START_DATE"), "%Y-%m-%d").date(),
-        time.min,
-    )
-    GROUND_DATASET_END_DATE = datetime.combine(
-        datetime.strptime(os.getenv("GROUND_DATASET_END_DATE"), "%Y-%m-%d").date(), time.max
-    )
-except TypeError:
+    start_date_str = os.getenv("GROUND_DATASET_START_DATE")
+    if start_date_str:
+        GROUND_DATASET_START_DATE = datetime.combine(
+            datetime.strptime(start_date_str, "%Y-%m-%d").date(),
+            time.min,
+        )
+    end_date_str = os.getenv("GROUND_DATASET_END_DATE")
+    if end_date_str:
+        GROUND_DATASET_END_DATE = datetime.combine(
+            datetime.strptime(end_date_str, "%Y-%m-%d").date(), time.max
+        )
+except ValueError:
     print("Please provide valid dates in the .env file.")
-    sys.exit(1)
 
 # Flask Environment
 FASTAPI_ENV = os.getenv("FASTAPI_ENV")
