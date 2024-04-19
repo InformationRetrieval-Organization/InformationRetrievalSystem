@@ -39,12 +39,12 @@ async def search_vector_space(q: str) -> List[models.Post]:
     return filtered_posts
 
 def add_synonyms(lemmatized_query):
+    synonyms = {
+        'ppp': 'people power party',
+        'dp': 'democratic party',
+        'people power party': 'ppp',
+        'democratic party': 'dp'
+    }
     for word in lemmatized_query:
-        if word == 'ppp':
-            lemmatized_query.append('people power party')
-        elif word == 'dp':
-            lemmatized_query.append('democratic party')
-        elif word == 'people power party':
-            lemmatized_query.append('ppp')
-        elif word == 'democratic party':
-            lemmatized_query.append('dp')
+        if word in synonyms:
+            lemmatized_query.append(synonyms[word])
