@@ -8,6 +8,8 @@
 
 [ground truth sheet](https://docs.google.com/spreadsheets/d/1wl72UrtBVSqMwfYwsJgIb21gftcBTYMtiB67N0tCS7A/edit?usp=sharing)
 
+[presentation](https://docs.google.com/presentation/d/1e1AI8_XOQzUqb0r3M0vpinvw799a-UR0B3E_cHVLtm8/edit?usp=sharing)
+
 ## requirements
 
 * Python >=3.7
