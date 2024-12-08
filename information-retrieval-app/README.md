@@ -1,4 +1,4 @@
-# Web User Interface for the Information Retrieval System
+# information retrieval app
 
 ## Technologies Used
 

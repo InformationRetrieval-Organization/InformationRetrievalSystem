@@ -1,4 +1,4 @@
-# Information Retrieval Evaluation
+# information retrieval api
 
 ## documents
 
