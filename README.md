@@ -1,3 +1,6 @@
+[![Build and deploy container app to Azure Web App - app-informationretrieval-prod](https://github.com/InformationRetrieval-Organization/information-retrieval/actions/workflows/main_app-informationretrieval-prod.yml/badge.svg)](https://github.com/InformationRetrieval-Organization/information-retrieval/actions/workflows/main_app-informationretrieval-prod.yml)
+[![Build and deploy container app to Azure Web App - api-informationretrieval-prod](https://github.com/InformationRetrieval-Organization/information-retrieval/actions/workflows/main_api-informationretrieval-prod.yml/badge.svg)](https://github.com/InformationRetrieval-Organization/information-retrieval/actions/workflows/main_api-informationretrieval-prod.yml)
+
 # information retrieval
 
 ## documents
